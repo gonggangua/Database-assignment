@@ -5,6 +5,7 @@ CREATE TABLE users(
     `level` INT,
     `status` VARCHAR(20),
     `registry` DATETIME,
-    `money` INT,`assignment`
-    PRIMARY KEY(`id`)
+    `money` INT,
+    PRIMARY KEY(`id`),
+    CHECK(`status` = 'offline' OR `status` = 'online' OR `status` = 'busy')
 );
