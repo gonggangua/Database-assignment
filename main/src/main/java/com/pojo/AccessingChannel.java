@@ -2,7 +2,7 @@ package com.pojo;
 
 import java.sql.Timestamp;
 
-public class accessingChannel {
+public class AccessingChannel {
     private int uid;
     private int sid;
     private String chname;

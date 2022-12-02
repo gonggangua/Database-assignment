@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ServerMapper">
+    <insert id="insert" parameterType="Server" useGeneratedKeys="true" keyProperty="id">
+        insert into servers(`name`, `creator`, `isPrivate`)
+        values(#{name}, #{creator}, #{isPrivate});
+    </insert>
+
+    <select id="selectAll" resultType="Server">
+        select * from servers
+    </select>
+
+    <select id="selectById" parameterType="int" resultType="Server">
+        select * from servers
+        where id = #{id}
+    </select>
+
+    <select id="selectByName" parameterType="String" resultType="Server">
+        select * from servers
+        where `name` like %#{name}%
+    </select>
+</mapper>

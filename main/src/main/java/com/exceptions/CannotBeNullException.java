@@ -9,6 +9,6 @@ public class CannotBeNullException extends Exception {
 
     @Override
     public String toString() {
-        return type + " cannot be null";
+        return type + " cannot be null.";
     }
 }

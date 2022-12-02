@@ -4,9 +4,9 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.UserMapper">
 
-    <insert id="insertUser" parameterType="map">
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         insert into users(`name`, `mail`, `level`, `status`, `registry`, `money`)
-            values(#{name}, #{mail}, 1, 'offline', now(), 0);
+            values(#{name}, #{mail}, #{level}, #{status}, now(), #{money});
     </insert>
 
     <update id="createUser" parameterType="map">
@@ -14,12 +14,13 @@
     </update>
 
     <update id="createSelfView" parameterType="map">
-        create view #{name}SelfView as
-        select * from users where name = #{name}
+        create view SelfView_#{name} as
+        select * from users where `name` = #{name}
     </update>
 
     <update id="grantSelfView" parameterType="map">
-        grant select, show view, update(`name`, `mail`, `status`) on #{name}SelfView to #{name}
+        grant select, show view on SelfView_#{name} to #{name}
+        grant update(`name`, `mail`, `status`) on SelfView_#{name} to #{name}
     </update>
 
     <update id="grantRegularUser" parameterType="map">
@@ -37,7 +38,13 @@
 
     <select id="selectByName" parameterType="String" resultType="User">
         select * from users
-        where `name` = #{name}
+        where `name` like %#{name}%
     </select>
+
+    <update id="charge" parameterType="map">
+        update users
+        set money = money + #{money}
+        where id = #{id}
+    </update>
 
 </mapper>

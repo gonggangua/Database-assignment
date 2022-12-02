@@ -5,6 +5,10 @@
 <configuration>
     <typeAliases>
         <typeAlias alias="User" type="com.pojo.User"/>
+        <typeAlias alias="Server" type="com.pojo.Server"/>
+        <typeAlias alias="Group" type="com.pojo.Group"/>
+        <typeAlias alias="JoiningServer" type="com.pojo.JoiningServer"/>
+        <typeAlias alias="ServerBlacklist" type="com.pojo.ServerBlacklist"/>
     </typeAliases>
 
     <environments default="development">
@@ -22,5 +26,9 @@
     <mappers>
         <mapper resource="com/dao/UserMapper.xml"/>
         <mapper resource="com/dao/LoginMapper.xml"/>
+        <mapper resource="com/dao/ServerMapper.xml"/>
+        <mapper resource="com/dao/GroupMapper.xml"/>
+        <mapper resource="com/dao/JoiningServerMapper.xml"/>
+        <mapper resource="com/dao/ServerBlacklistMapper.xml"/>
     </mappers>
 </configuration>
