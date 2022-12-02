@@ -24,7 +24,6 @@ public class MybatisUtil {
             InputStream rootInput = Resources.getResourceAsStream(rootProperties);
             root = new Properties();
             root.load(rootInput);
-            System.out.println(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
