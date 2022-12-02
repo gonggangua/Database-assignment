@@ -13,29 +13,32 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class MybatisUtil {
-    private static InputStream resource;
-    private static Properties root;
+    private static String config = "mybatis-config.xml";
+    private static String rootProperties = "root.properties";
 
-    static {
-        String config = "mybatis-config.xml";
-        String rootProperties = "root.properties";
+    public static SqlSession getSqlSession(Properties prop) {
+        InputStream resource = null;
         try {
             resource = Resources.getResourceAsStream(config);
-            InputStream rootInput = Resources.getResourceAsStream(rootProperties);
-            root = new Properties();
-            root.load(rootInput);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static SqlSession getSqlSession(Properties prop) {
         SqlSessionFactory factory =
                 new SqlSessionFactoryBuilder().build(resource, prop);
         return factory.openSession();
     }
 
     public static SqlSession getRootSqlSession() {
+        InputStream resource = null;
+        Properties root = null;
+        try {
+            InputStream rootInput = Resources.getResourceAsStream(rootProperties);
+            root = new Properties();
+            root.load(rootInput);
+            resource = Resources.getResourceAsStream(config);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         SqlSessionFactory factory =
                 new SqlSessionFactoryBuilder().build(resource, root);
         return factory.openSession();

@@ -14,13 +14,13 @@
     </update>
 
     <update id="createSelfView" parameterType="map">
-        create view SelfView_#{name} as
+        create view SelfView_${name} as
         select * from users where `name` = #{name}
     </update>
 
     <update id="grantSelfView" parameterType="map">
-        grant select, show view on SelfView_#{name} to #{name}
-        grant update(`name`, `mail`, `status`) on SelfView_#{name} to #{name}
+        grant select, show view on `SelfView_${name}` to `${name}`;
+        grant update(`name`, `mail`, `status`) on `SelfView_${name}` to `${name}`;
     </update>
 
     <update id="grantRegularUser" parameterType="map">

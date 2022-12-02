@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="ServerMapper">
+<mapper namespace="com.dao.ServerMapper">
     <insert id="insert" parameterType="Server" useGeneratedKeys="true" keyProperty="id">
         insert into servers(`name`, `creator`, `isPrivate`)
         values(#{name}, #{creator}, #{isPrivate});
