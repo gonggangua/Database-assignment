@@ -15,4 +15,14 @@ public interface LoginMapper {
     List<Server> selectServerById(int id);
 
     List<Server> selectServerByName(String name);
+
+    void login(String name);
+
+    void logout(String name);
+
+    List<User> getFriends(User user);
+
+    List<User> getRequests(User user);
+
+    List<User> getBlockedUsers(User user);
 }

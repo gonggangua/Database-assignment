@@ -9,6 +9,8 @@
         <typeAlias alias="Group" type="com.pojo.Group"/>
         <typeAlias alias="JoiningServer" type="com.pojo.JoiningServer"/>
         <typeAlias alias="ServerBlacklist" type="com.pojo.ServerBlacklist"/>
+        <typeAlias alias="Friends" type="com.pojo.Friends"/>
+        <typeAlias alias="UserBlacklist" type="com.pojo.UserBlacklist"/>
     </typeAliases>
 
     <environments default="development">
@@ -31,5 +33,7 @@
         <mapper resource="com/dao/GroupMapper.xml"/>
         <mapper resource="com/dao/JoiningServerMapper.xml"/>
         <mapper resource="com/dao/ServerBlacklistMapper.xml"/>
+        <mapper resource="com/dao/FriendsMapper.xml"/>
+        <mapper resource="com/dao/UserBlacklistMapper.xml"/>
     </mappers>
 </configuration>

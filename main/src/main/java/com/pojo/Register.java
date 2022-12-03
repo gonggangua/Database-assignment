@@ -1,5 +1,7 @@
 package com.pojo;
 
+import com.dao.FriendsMapper;
+import com.dao.UserBlacklistMapper;
 import com.dao.UserMapper;
 import com.exceptions.DuplicateNameException;
 import com.utils.MybatisUtil;
@@ -14,7 +16,7 @@ public class Register {
             throws DuplicateNameException {
         SqlSession sqlSession = MybatisUtil.getRootSqlSession();
 
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 
         HashMap<String,Object> map = new HashMap<>();
         map.put("name", name);
@@ -23,17 +25,31 @@ public class Register {
         User user = new User(name, mail);
 
         try {
-            mapper.insert(user);
+            userMapper.insert(user);
+            user = userMapper.selectByName(name).get(0);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
                 throw  new DuplicateNameException(name);
             }
         }
-        mapper.createUser(map);
+        map.put("id", user.getId());
 
-        mapper.grantRegularUser(map);
-        mapper.createSelfView(map);
-        mapper.grantSelfView(map);
+        userMapper.createUser(map);
+
+        userMapper.grantRegularUser(map);
+        userMapper.createSelfView(map);
+        userMapper.grantSelfView(map);
+
+        FriendsMapper friendsMapper = sqlSession.getMapper(FriendsMapper.class);
+        friendsMapper.createFriendsView(user);
+        friendsMapper.createFriendsStatus(user);
+        friendsMapper.grantFriendsView(user);
+        friendsMapper.grantFriendsStatus(user);
+
+        UserBlacklistMapper blacklistMapper =
+                sqlSession.getMapper(UserBlacklistMapper.class);
+        blacklistMapper.createBlacklistView(user);
+        blacklistMapper.grantBlacklistView(user);
 
         sqlSession.commit();
         sqlSession.close();

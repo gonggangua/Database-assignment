@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.FriendsMapper">
+    <insert id="insert" parameterType="Friends">
+        insert into `friends`
+        values (#{uid}, #{target}, #{status})
+    </insert>
+
+    <update id="createFriendsView" parameterType="User">
+        create view `friendsView_${id}` as
+        select * from friends
+        where (uid = #{id} or target = #{id})
+    </update>
+
+    <update id="createFriendsStatus" parameterType="User">
+        create view `friendsStatus_${id}` as
+        select (users.id, users.name, users.mail, users.level, users.`status`, users.registry) from friends, users
+        where (uid = #{id} and target = users.id and friends.status = true)
+    </update>
+
+    <update id="grantFriendsView" parameterType="User">
+        grant select, show view on `friendsView_${id}` to `${name}`
+    </update>
+
+    <update id="grantFriendsStatus" parameterType="User">
+        grant select, show view on `friendsStatus_${id}` to `${name}`
+    </update>
+
+    <delete id="delete" parameterType="Friends">
+        delete from friends
+        where uid = #{uid} and target = #{target}
+    </delete>
+
+    <update id="accept" parameterType="Friends">
+        update `friends`
+        set `status` = true
+        where uid = #{uid} and target = #{target}
+    </update>
+
+</mapper>

@@ -19,6 +19,6 @@
 
     <select id="selectByName" parameterType="String" resultType="Server">
         select * from servers
-        where `name` like %#{name}%
+        where `name` like '%${name}%'
     </select>
 </mapper>

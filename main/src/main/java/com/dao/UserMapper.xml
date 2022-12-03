@@ -14,13 +14,13 @@
     </update>
 
     <update id="createSelfView" parameterType="map">
-        create view SelfView_${name} as
-        select * from users where `name` = #{name}
+        create view SelfView_${id} as
+        select * from users where `id` = #{name}
     </update>
 
     <update id="grantSelfView" parameterType="map">
-        grant select, show view on `SelfView_${name}` to `${name}`;
-        grant update(`name`, `mail`, `status`) on `SelfView_${name}` to `${name}`;
+        grant select, show view on `SelfView_${id}` to `${name}`;
+        grant update(`name`, `mail`, `status`) on `SelfView_${id}` to `${name}`;
     </update>
 
     <update id="grantRegularUser" parameterType="map">
@@ -38,7 +38,7 @@
 
     <select id="selectByName" parameterType="String" resultType="User">
         select * from users
-        where `name` like %#{name}%
+        where `name` like '%${name}%'
     </select>
 
     <update id="charge" parameterType="map">

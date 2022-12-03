@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.UserBlacklistMapper">
+    <select id="select" parameterType="UserBlacklist" resultType="ServerBlacklist">
+        select * from userBlacklists
+        where uid = #{uid} and blockid = #{blockid}
+    </select>
+
+    <insert id="insert" parameterType="UserBlacklist">
+        insert into userBlacklists
+        values (#{uid}, #{blockid})
+    </insert>
+
+    <delete id="delete" parameterType="UserBlacklist">
+        delete from userBlacklists
+        where uid = #{uid} and blockid = #{blockid}
+    </delete>
+
+    <update id="createBlacklistView" parameterType="User">
+        create view `blacklistView_${id}` as
+        select * from userBlacklists
+        where uid = #{id}
+    </update>
+
+    <update id="grantBlacklistView" parameterType="User">
+        grant select, show view on `blacklistView_${id}` to `${name}`
+    </update>
+
+</mapper>

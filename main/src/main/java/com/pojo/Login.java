@@ -1,13 +1,18 @@
 package com.pojo;
 
+import com.dao.FriendsMapper;
 import com.dao.GroupMapper;
 import com.dao.JoiningServerMapper;
 import com.dao.LoginMapper;
+import com.dao.PrivateMessageMapper;
 import com.dao.ServerBlacklistMapper;
 import com.dao.ServerMapper;
+import com.dao.UserBlacklistMapper;
 import com.dao.UserMapper;
+import com.exceptions.AlreadyExistException;
 import com.exceptions.BlockedException;
 import com.exceptions.CannotBeNullException;
+import com.exceptions.DoNotExistException;
 import com.exceptions.LoginFailException;
 import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
@@ -36,10 +41,15 @@ public class Login {
         }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         cur = mapper.selectSelf(username).get(0);
+        mapper.login(username);
+        sqlSession.commit();
     }
 
     //登出
     public void logout() {
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        mapper.logout(cur.getName());
+        sqlSession.commit();
         sqlSession.close();
     }
 
@@ -164,5 +174,170 @@ public class Login {
 
         root.commit();
         root.close();
+    }
+
+    //查看好友
+    public List<User> getFriends() {
+        LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
+
+        return loginMapper.getFriends(cur);
+    }
+
+    //查看待通过好友请求
+    public List<User> getRequests() {
+        LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
+
+        return loginMapper.getRequests(cur);
+    }
+
+    //发送好友请求
+    public void requestFriend(User user)
+            throws AlreadyExistException, BlockedException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        UserBlacklistMapper userBlacklistMapper =
+                root.getMapper(UserBlacklistMapper.class);
+        UserBlacklist blacklist = new UserBlacklist( user.getId(), cur.getId());
+        if (!userBlacklistMapper.select(blacklist).isEmpty()) {
+            throw new BlockedException();
+        }
+
+        FriendsMapper friendsMapper = root.getMapper(FriendsMapper.class);
+        if (user.getId() == cur.getId()) {
+            return;
+        }
+
+        Friends friends = new Friends(cur.getId(), user.getId(),false);
+        try {
+            friendsMapper.insert(friends);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new AlreadyExistException();
+            }
+        }
+
+        root.commit();
+        root.close();
+    }
+
+    //拒绝好友请求
+    public void rejectFriend(User user)
+            throws DoNotExistException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        FriendsMapper mapper = root.getMapper(FriendsMapper.class);
+
+        Friends friends = new Friends(user.getId(), cur.getId(), false);
+        try {
+            mapper.delete(friends);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new DoNotExistException();
+            }
+        }
+
+        root.commit();
+        root.close();
+    }
+
+    //接受好友请求
+    public void acceptFriend(User user)
+            throws DoNotExistException, AlreadyExistException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        FriendsMapper mapper = root.getMapper(FriendsMapper.class);
+
+        Friends friends = new Friends(user.getId(), cur.getId(), true);
+        try {
+            mapper.accept(friends);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new DoNotExistException();
+            }
+        }
+        Friends both = new Friends(cur.getId(), user.getId(), true);
+        try {
+            mapper.insert(both);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new AlreadyExistException();
+            }
+        }
+
+        root.commit();
+        root.close();
+    }
+
+    //拉黑用户
+    public void blockUser(User user) throws AlreadyExistException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        UserBlacklistMapper mapper = root.getMapper(UserBlacklistMapper.class);
+
+        UserBlacklist blacklist = new UserBlacklist(cur.getId(), user.getId());
+
+        try {
+            mapper.insert(blacklist);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new AlreadyExistException();
+            }
+        }
+
+        root.commit();
+        root.close();
+    }
+
+    //解除拉黑
+    public void removeBlock(User user) throws DoNotExistException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        UserBlacklistMapper mapper = root.getMapper(UserBlacklistMapper.class);
+
+        UserBlacklist blacklist = new UserBlacklist(cur.getId(), user.getId());
+
+        try {
+            mapper.delete(blacklist);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new DoNotExistException();
+            }
+        }
+
+        root.commit();
+        root.close();
+    }
+
+    //获取黑名单用户
+    public List<User> getBlockedUsers() {
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        return mapper.getBlockedUsers(cur);
+    }
+
+    //发送私信
+    public void sendPrivateMessage(User user, String content)
+            throws BlockedException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        UserBlacklistMapper userBlacklistMapper =
+                root.getMapper(UserBlacklistMapper.class);
+        UserBlacklist blacklist = new UserBlacklist(user.getId(), cur.getId());
+        if (!userBlacklistMapper.select(blacklist).isEmpty()) {
+            throw new BlockedException();
+        }
+
+        PrivateMessageMapper messageMapper =
+                root.getMapper(PrivateMessageMapper.class);
+        PrivateMessage message = new PrivateMessage(cur.getId(), user.getId(), content);
+        messageMapper.insert(message);
+
+        root.commit();
+        root.close();
+    }
+
+    //查看私信
+    public List<PrivateMessage> checkPrivateMessage(User user) {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        PrivateMessageMapper mapper =
+                root.getMapper(PrivateMessageMapper.class);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id1", cur.getId());
+        map.put("id2", user.getId());
+        return mapper.selectByUsers(map);
     }
 }

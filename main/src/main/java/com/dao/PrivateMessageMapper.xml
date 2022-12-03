@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.PrivateMessageMapper">
+    <select id="selectByUsers" parameterType="map" resultType="PrivateMessage">
+        select * from `privateMessages`
+        where (sender = #{id1} and receiver = #{id2}) or
+        (sender = #{id2} and receiver = #{id1})
+    </select>
+
+    <insert id="insert" parameterType="PrivateMessage">
+        insert into privateMessages(sender, receiver, sendTime, content)
+        values (#{sender}, #{receiver}, now(), #{content})
+    </insert>
+</mapper>

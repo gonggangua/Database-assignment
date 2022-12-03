@@ -11,20 +11,46 @@
 
     <select id="selectUserByName" parameterType="String" resultType="User">
         select * from userBasicInfo
-        where `name` like %#{name}%
+        where `name` like '%${name}%'
     </select>
 
     <select id="selectSelf" parameterType="String" resultType="User">
-        select * from `selfView_${name}`
+        select * from `selfView_${id}`
     </select>
 
     <select id="selectServerByName" parameterType="String" resultType="Server">
         select * from publicServer
-        where `name` like %#{name}%
+        where `name` like '%${name}%'
     </select>
 
     <select id="selectServerById" parameterType="int" resultType="Server">
         select * from publicServer
         where `id` = #{id}
+    </select>
+
+    <update id="login" parameterType="String">
+        update `selfView_${id}`
+        set status = 'online'
+    </update>
+
+    <update id="logout" parameterType="String">
+        update `selfView_${id}`
+        set status = 'offline'
+    </update>
+
+    <select id="getFriends" parameterType="User" resultType="User">
+        select * from `friendsStatus_${id}`
+    </select>
+
+    <select id="getRequests" parameterType="User" resultType="User">
+        select `userBasicInfo`.* from `friendsView_${id}`, `userBasicInfo`
+        where (`status` = false) and
+        (`uid` = #{id}) and
+        (`target` = `userBasicInfo`.id)
+    </select>
+
+    <select id="getBlockedUsers" parameterType="User" resultType="User">
+        select `userBasicInfo`.* from `blacklistView_${id}`, `userBasicInfo`
+        where (`uid` = #{id}) and (`blockid` = `userBasicInfo`.id)
     </select>
 </mapper>
