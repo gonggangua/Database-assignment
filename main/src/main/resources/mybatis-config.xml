@@ -11,6 +11,7 @@
         <typeAlias alias="ServerBlacklist" type="com.pojo.ServerBlacklist"/>
         <typeAlias alias="Friends" type="com.pojo.Friends"/>
         <typeAlias alias="UserBlacklist" type="com.pojo.UserBlacklist"/>
+        <typeAlias alias="PrivateMessage" type="com.pojo.PrivateMessage"/>
     </typeAliases>
 
     <environments default="development">
@@ -35,5 +36,6 @@
         <mapper resource="com/dao/ServerBlacklistMapper.xml"/>
         <mapper resource="com/dao/FriendsMapper.xml"/>
         <mapper resource="com/dao/UserBlacklistMapper.xml"/>
+        <mapper resource="com/dao/PrivateMessageMapper.xml"/>
     </mappers>
 </configuration>

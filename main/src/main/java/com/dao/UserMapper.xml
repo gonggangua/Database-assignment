@@ -15,7 +15,7 @@
 
     <update id="createSelfView" parameterType="map">
         create view SelfView_${id} as
-        select * from users where `id` = #{name}
+        select * from users where `id` = #{id}
     </update>
 
     <update id="grantSelfView" parameterType="map">

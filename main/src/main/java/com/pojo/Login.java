@@ -18,6 +18,8 @@ import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -40,17 +42,24 @@ public class Login {
             }
         }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        cur = mapper.selectSelf(username).get(0);
-        mapper.login(username);
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        UserMapper userMapper = root.getMapper(UserMapper.class);
+        cur = userMapper.selectByName(username).get(0);
+        root.close();
+        mapper.login(cur.getId());
         sqlSession.commit();
     }
 
     //登出
     public void logout() {
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        mapper.logout(cur.getName());
+        mapper.logout(cur.getId());
         sqlSession.commit();
         sqlSession.close();
+    }
+
+    public User self() {
+        return cur;
     }
 
     //id搜索用户
@@ -338,6 +347,8 @@ public class Login {
         HashMap<String, Object> map = new HashMap<>();
         map.put("id1", cur.getId());
         map.put("id2", user.getId());
-        return mapper.selectByUsers(map);
+        List<PrivateMessage> ret = mapper.selectByUsers(map);
+        Collections.sort(ret);
+        return ret;
     }
 }

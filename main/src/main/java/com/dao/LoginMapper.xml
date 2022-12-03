@@ -28,12 +28,12 @@
         where `id` = #{id}
     </select>
 
-    <update id="login" parameterType="String">
+    <update id="login" parameterType="int">
         update `selfView_${id}`
         set status = 'online'
     </update>
 
-    <update id="logout" parameterType="String">
+    <update id="logout" parameterType="int">
         update `selfView_${id}`
         set status = 'offline'
     </update>

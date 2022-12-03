@@ -16,7 +16,7 @@
 
     <update id="createFriendsStatus" parameterType="User">
         create view `friendsStatus_${id}` as
-        select (users.id, users.name, users.mail, users.level, users.`status`, users.registry) from friends, users
+        select users.id, users.name, users.mail, users.level, users.`status`, users.registry from friends, users
         where (uid = #{id} and target = users.id and friends.status = true)
     </update>
 

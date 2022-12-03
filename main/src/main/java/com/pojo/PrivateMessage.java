@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class PrivateMessage {
+public class PrivateMessage implements Comparable<PrivateMessage> {
     private int id;
     private int sender;
     private int receiver;
@@ -17,5 +17,21 @@ public class PrivateMessage {
         this.receiver = receiver;
         sendTime = new Timestamp(new Date().getTime());
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "PrivateMessage{" +
+                "id=" + id +
+                ", sender=" + sender +
+                ", receiver=" + receiver +
+                ", sendTime=" + sendTime +
+                ", content='" + content + '\'' +
+                '}';
+    }
+
+    @Override
+    public int compareTo(PrivateMessage o) {
+        return Integer.compare(id, o.id);
     }
 }
