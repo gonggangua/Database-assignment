@@ -28,9 +28,18 @@
         where `id` = #{id}
     </select>
 
+    <select id="getJoinedServers" parameterType="int" resultType="Server">
+        select * from `joinedServers_${id}`
+    </select>
+
     <update id="login" parameterType="int">
         update `selfView_${id}`
         set status = 'online'
+    </update>
+
+    <update id="setStatus" parameterType="User">
+        update `selfView_${id}`
+        set status = #{status}
     </update>
 
     <update id="logout" parameterType="int">

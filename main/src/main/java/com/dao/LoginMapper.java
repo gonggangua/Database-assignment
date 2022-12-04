@@ -16,9 +16,13 @@ public interface LoginMapper {
 
     List<Server> selectServerByName(String name);
 
+    List<Server> getJoinedServers(int id);
+
     void login(int id);
 
     void logout(int id);
+
+    void setStatus(User user);
 
     List<User> getFriends(User user);
 

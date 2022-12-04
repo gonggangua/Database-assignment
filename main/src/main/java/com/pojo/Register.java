@@ -1,6 +1,7 @@
 package com.pojo;
 
 import com.dao.FriendsMapper;
+import com.dao.JoiningServerMapper;
 import com.dao.UserBlacklistMapper;
 import com.dao.UserMapper;
 import com.exceptions.DuplicateNameException;
@@ -50,6 +51,11 @@ public class Register {
                 sqlSession.getMapper(UserBlacklistMapper.class);
         blacklistMapper.createBlacklistView(user);
         blacklistMapper.grantBlacklistView(user);
+
+        JoiningServerMapper joiningServerMapper =
+                sqlSession.getMapper(JoiningServerMapper.class);
+        joiningServerMapper.createJoinedServers(user);
+        joiningServerMapper.grantJoinedServers(user);
 
         sqlSession.commit();
         sqlSession.close();

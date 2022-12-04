@@ -8,4 +8,13 @@
         values (#{sid}, #{name}, #{canCreate}, #{canBan}, #{canManage}, #{canStats})
     </insert>
 
+    <select id="getUserGroup" parameterType="map" resultType="Group">
+        call getGroup(#{uid}, #{sid})
+    </select>
+
+    <select id="getCanCreate" parameterType="map" resultType="boolean">
+        call getCanCreate(#{uid}, #{sid})
+    </select>
+
+
 </mapper>

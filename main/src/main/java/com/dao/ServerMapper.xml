@@ -21,4 +21,14 @@
         select * from servers
         where `name` like '%${name}%'
     </select>
+
+    <update id="createServerMembers" parameterType="Server">
+        create view `members_${id}` as
+        select `userBasicInfo`.*, joiningServer.gname, joiningServer.time from joiningServer, `userBasicInfo`
+        where sid = #{id} and uid = `userBasicInfo`.id
+    </update>
+
+    <update id="grantServerMembers" parameterType="map">
+        grant select, show view on `members_${sid}` to #{uname}
+    </update>
 </mapper>

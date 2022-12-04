@@ -13,12 +13,13 @@ import com.exceptions.AlreadyExistException;
 import com.exceptions.BlockedException;
 import com.exceptions.CannotBeNullException;
 import com.exceptions.DoNotExistException;
+import com.exceptions.LevelLimitException;
 import com.exceptions.LoginFailException;
+import com.pojo.types.UserStatus;
 import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,26 @@ public class Login {
         mapper.logout(cur.getId());
         sqlSession.commit();
         sqlSession.close();
+    }
+
+    //设置个人状态
+    public void setStatus(UserStatus status) {
+        String statusString;
+        switch (status) {
+            case BUSY:
+                statusString = "busy";
+                break;
+            case OFFLINE:
+                statusString = "offline";
+                break;
+            default:
+                statusString = "online";
+                break;
+        }
+        cur.setStatus(statusString);
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        mapper.setStatus(cur);
+        sqlSession.commit();
     }
 
     public User self() {
@@ -101,15 +122,29 @@ public class Login {
     }
 
     //创建服务器
-    public void createServer(String name, boolean isPrivate) {
+    public void createServer(String name, boolean isPrivate)
+            throws LevelLimitException {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
         Server server = new Server(name, cur.getId(), isPrivate);
 
         ServerMapper serverMapper = root.getMapper(ServerMapper.class);
 
-        serverMapper.insert(server);
+        try {
+            serverMapper.insert(server);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new LevelLimitException();
+            }
+        }
         int sid = server.getId();
+
+        serverMapper.createServerMembers(server);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("uname", cur.getName());
+        map.put("sid", server.getId());
+        serverMapper.grantServerMembers(map);
 
         Group creatorGroup = new Group(sid, "creator",
                 true, true, true, true);
@@ -159,27 +194,43 @@ public class Login {
         }
     }
 
+    //获得已加入的服务器
+    public List<Server> getJoinedServers() {
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        return mapper.getJoinedServers(cur.getId());
+    }
+
     //加入服务器
     public void joinServer(Server server)
-            throws BlockedException {
+            throws AlreadyExistException, BlockedException {
         SqlSession root = MybatisUtil.getRootSqlSession();
         int sid = server.getId();
         int uid = cur.getId();
 
+        List<Server> joinedServers = getJoinedServers();
+        for (Server joinedServer : joinedServers) {
+            if (joinedServer.getId() == sid) {
+                throw new AlreadyExistException();
+            }
+        }
+
+        ServerMapper serverMapper = root.getMapper(ServerMapper.class);
         HashMap<String, Object> map = new HashMap<>();
         map.put("sid", sid);
         map.put("uid", uid);
-
-        ServerBlacklistMapper mapper = root.getMapper(ServerBlacklistMapper.class);
-        List<ServerBlacklist> list = mapper.selectByIds(map);
-        if (!list.isEmpty()) {
-            throw new BlockedException();
-        }
+        map.put("uname", cur.getName());
+        serverMapper.grantServerMembers(map);
 
         JoiningServer join = new JoiningServer(uid, sid, "regular");
         JoiningServerMapper joiningServerMapper =
                 root.getMapper(JoiningServerMapper.class);
-        joiningServerMapper.insert(join);
+        try {
+            joiningServerMapper.insert(join);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new BlockedException();
+            }
+        }
 
         root.commit();
         root.close();
@@ -202,25 +253,19 @@ public class Login {
     //发送好友请求
     public void requestFriend(User user)
             throws AlreadyExistException, BlockedException {
-        SqlSession root = MybatisUtil.getRootSqlSession();
-        UserBlacklistMapper userBlacklistMapper =
-                root.getMapper(UserBlacklistMapper.class);
-        UserBlacklist blacklist = new UserBlacklist( user.getId(), cur.getId());
-        if (!userBlacklistMapper.select(blacklist).isEmpty()) {
-            throw new BlockedException();
-        }
-
-        FriendsMapper friendsMapper = root.getMapper(FriendsMapper.class);
         if (user.getId() == cur.getId()) {
             return;
         }
 
+        SqlSession root = MybatisUtil.getRootSqlSession();
+
+        FriendsMapper friendsMapper = root.getMapper(FriendsMapper.class);
         Friends friends = new Friends(cur.getId(), user.getId(),false);
         try {
             friendsMapper.insert(friends);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                throw new AlreadyExistException();
+                throw new BlockedException();
             }
         }
 
@@ -322,18 +367,17 @@ public class Login {
     public void sendPrivateMessage(User user, String content)
             throws BlockedException {
         SqlSession root = MybatisUtil.getRootSqlSession();
-        UserBlacklistMapper userBlacklistMapper =
-                root.getMapper(UserBlacklistMapper.class);
-        UserBlacklist blacklist = new UserBlacklist(user.getId(), cur.getId());
-        if (!userBlacklistMapper.select(blacklist).isEmpty()) {
-            throw new BlockedException();
-        }
 
         PrivateMessageMapper messageMapper =
                 root.getMapper(PrivateMessageMapper.class);
         PrivateMessage message = new PrivateMessage(cur.getId(), user.getId(), content);
-        messageMapper.insert(message);
-
+        try {
+            messageMapper.insert(message);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new BlockedException();
+            }
+        }
         root.commit();
         root.close();
     }
@@ -349,6 +393,12 @@ public class Login {
         map.put("id2", user.getId());
         List<PrivateMessage> ret = mapper.selectByUsers(map);
         Collections.sort(ret);
+        root.close();
         return ret;
+    }
+
+    //进入服务器
+    public ServerInteract enterServer(Server server) {
+        return new ServerInteract(cur, sqlSession, server);
     }
 }

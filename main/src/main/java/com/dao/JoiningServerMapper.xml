@@ -3,9 +3,26 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.JoiningServerMapper">
-<insert id="insert" parameterType="JoiningServer">
-    insert into `joiningServer`
-    values (#{uid}, #{sid}, #{gname}, now())
-</insert>
+
+    <insert id="insert" parameterType="JoiningServer">
+        insert into `joiningServer`
+        values (#{uid}, #{sid}, #{gname}, now())
+    </insert>
+
+    <select id="selectByIds" parameterType="map" resultType="JoiningServer">
+        select * from `joiningServer`
+        where uid = #{uid} and sid = #{sid}
+    </select>
+
+    <update id="createJoinedServers" parameterType="User">
+        create view `joinedServers_${id}}` as
+        select servers.* from joiningServer, servers
+        where joiningServer.uid = #{id} and
+        joiningServer.sid = servers.id
+    </update>
+
+    <update id="grantJoinedServers" parameterType="User">
+        grant select, show view on `joinedServers_${id}` to #{name}
+    </update>
 
 </mapper>
