@@ -16,5 +16,17 @@
         call getCanCreate(#{uid}, #{sid})
     </select>
 
+    <select id="getCanBan" parameterType="map" resultType="boolean">
+        call getCanBan(#{uid}, #{sid})
+    </select>
+
+    <select id="getCanStat" parameterType="map" resultType="boolean">
+        call getCanStat(#{uid}, #{sid})
+    </select>
+
+    <select id="getCanManage" parameterType="map" resultType="boolean">
+        call getCanManage(#{uid}, #{sid})
+    </select>
+
 
 </mapper>

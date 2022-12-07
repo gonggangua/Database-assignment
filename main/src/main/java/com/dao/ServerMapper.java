@@ -1,6 +1,7 @@
 package com.dao;
 
 import com.pojo.Server;
+import com.pojo.ServerStat;
 
 import java.util.List;
 import java.util.Map;
@@ -17,4 +18,6 @@ public interface ServerMapper {
     void createServerMembers(Server server);
 
     void grantServerMembers(Map<String, Object> map);
+
+    ServerStat getServerStat(Server server);
 }

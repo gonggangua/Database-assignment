@@ -8,4 +8,12 @@ public class Category {
         this.sid = sid;
         this.name = name;
     }
+
+    public int getSid() {
+        return sid;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

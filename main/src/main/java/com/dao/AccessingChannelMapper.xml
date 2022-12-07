@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.AccessingChannelMapper">
+    <insert id="access" parameterType="AccessingChannel" useGeneratedKeys="true" keyProperty="id">
+        insert into accessingChannel(uid, sid, chname, accessTime)
+        value (#{uid}, #{sid}, #{chname}, now())
+    </insert>
+
+    <update id="leave" parameterType="AccessingChannel">
+        update table accessingChannel
+        set leaveTime = now()
+        where id = #{id}
+    </update>
+</mapper>

@@ -11,4 +11,10 @@ public interface GroupMapper {
     List<Group> getUserGroup(Map<String, Object> map);
 
     boolean getCanCreate(Map<String, Object> map);
+
+    boolean getCanBan(Map<String, Object> map);
+
+    boolean getCanStat(Map<String, Object> map);
+
+    boolean getCanManage(Map<String, Object> map);
 }

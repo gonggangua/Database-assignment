@@ -15,7 +15,7 @@
     </select>
 
     <update id="createJoinedServers" parameterType="User">
-        create view `joinedServers_${id}}` as
+        create view `joinedServers_${id}` as
         select servers.* from joiningServer, servers
         where joiningServer.uid = #{id} and
         joiningServer.sid = servers.id
@@ -23,6 +23,18 @@
 
     <update id="grantJoinedServers" parameterType="User">
         grant select, show view on `joinedServers_${id}` to #{name}
+    </update>
+
+    <select id="getMembers" parameterType="Server" resultType="Member">
+        select id, `name`, `status`, gname, time
+        from users, joiningServer
+        where id = uid and sid = #{id}
+    </select>
+    
+    <update id="setGroup" parameterType="JoiningServer">
+        update joiningServer
+        set gname = #{gname}
+        where id = #{uid} and sid = #{sid}
     </update>
 
 </mapper>

@@ -27,7 +27,7 @@ public class Register {
 
         try {
             userMapper.insert(user);
-            user = userMapper.selectByName(name).get(0);
+            user = userMapper.selectByAccurateName(name).get(0);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
                 throw  new DuplicateNameException(name);

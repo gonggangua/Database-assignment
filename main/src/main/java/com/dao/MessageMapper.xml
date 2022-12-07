@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.MessageMapper">
+    <select id="selectByChannel" parameterType="Channel" resultType="Message">
+        select * from `messages`
+        where sid = #{sid} and chname = #{name}
+    </select>
+
+    <insert id="insert" parameterType="Message">
+        insert into messages(sender, receiver, sendTime, content)
+        values (#{sender}, #{receiver}, now(), #{content})
+    </insert>
+    
+    <select id="getNewMessages" parameterType="map" resultType="Message">
+        call getNewMessages(#{sid}, #{name}, #{uid})
+    </select>
+</mapper>

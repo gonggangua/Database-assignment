@@ -41,6 +41,11 @@
         where `name` like '%${name}%'
     </select>
 
+    <select id="selectByAccurateName" parameterType="String" resultType="User">
+        select * from users
+        where `name` = #{name}
+    </select>
+
     <update id="charge" parameterType="map">
         update users
         set money = money + #{money}

@@ -23,4 +23,6 @@ public interface UserMapper {
     List<User> selectById(int id);
 
     List<User> selectByName(String name);
+
+    List<User> selectByAccurateName(String name);
 }

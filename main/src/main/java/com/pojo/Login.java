@@ -45,7 +45,7 @@ public class Login {
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         SqlSession root = MybatisUtil.getRootSqlSession();
         UserMapper userMapper = root.getMapper(UserMapper.class);
-        cur = userMapper.selectByName(username).get(0);
+        cur = userMapper.selectByAccurateName(username).get(0);
         root.close();
         mapper.login(cur.getId());
         sqlSession.commit();

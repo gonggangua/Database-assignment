@@ -14,6 +14,13 @@
         <typeAlias alias="PrivateMessage" type="com.pojo.PrivateMessage"/>
         <typeAlias alias="Category" type="com.pojo.Category"/>
         <typeAlias alias="CategoryVisible" type="com.pojo.CategoryVisible"/>
+        <typeAlias alias="Channel" type="com.pojo.Channel"/>
+        <typeAlias alias="AccessingChannel" type="com.pojo.AccessingChannel"/>
+        <typeAlias alias="Message" type="com.pojo.Message"/>
+        <typeAlias alias="CommentingMessage" type="com.pojo.CommentingMessage"/>
+        <typeAlias alias="CommentStat" type="com.pojo.CommentStat"/>
+        <typeAlias alias="Member" type="com.pojo.Member"/>
+        <typeAlias alias="ServerStat" type="com.pojo.ServerStat"/>
     </typeAliases>
 
     <environments default="development">
@@ -41,5 +48,9 @@
         <mapper resource="com/dao/PrivateMessageMapper.xml"/>
         <mapper resource="com/dao/CategoryMapper.xml"/>
         <mapper resource="com/dao/CategoryVisibleMapper.xml"/>
+        <mapper resource="com/dao/ChannelMapper.xml"/>
+        <mapper resource="com/dao/AccessingChannelMapper.xml"/>
+        <mapper resource="com/dao/MessageMapper.xml"/>
+        <mapper resource="com/dao/CommentingMessageMapper.xml"/>
     </mappers>
 </configuration>

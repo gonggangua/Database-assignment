@@ -31,4 +31,8 @@
     <update id="grantServerMembers" parameterType="map">
         grant select, show view on `members_${sid}` to #{uname}
     </update>
+
+    <select id="getServerStat" parameterType="Server" resultType="ServerStat">
+        call getServerStat(#{id})
+    </select>
 </mapper>
