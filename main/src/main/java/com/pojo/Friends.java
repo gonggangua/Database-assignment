@@ -10,4 +10,13 @@ public class Friends {
         this.target = target;
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Friends{" +
+                "uid=" + uid +
+                ", target=" + target +
+                ", status=" + status +
+                '}';
+    }
 }

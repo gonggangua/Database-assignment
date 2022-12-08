@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.ChannelMapper">
-    <insert id="insert" parameterType="Channel">
+    <insert id="insert" parameterType="Channel" flushCache="true">
         insert into channels
         value (#{sid}, #{name}, #{cname}, #{type})
     </insert>
 
-    <select id="selectByCategory" parameterType="Category">
+    <select id="selectByCategory" parameterType="Category" resultType="Channel">
         select * from channels
         where sid = #{sid} and cname = #{name}
     </select>

@@ -29,6 +29,30 @@ public class User {
         money = 0;
     }
 
+    public User(int id, String name, String mail, int level, String status, Timestamp registry, int money) {
+        this.id = id;
+        this.name = name;
+        this.mail = mail;
+        this.level = level;
+        this.status = status;
+        this.registry = registry;
+        this.money = money;
+    }
+
+    public User(int id, String name, String mail, int level, String status, Timestamp registry) {
+        this.id = id;
+        this.name = name;
+        this.mail = mail;
+        this.level = level;
+        this.status = status;
+        this.registry = registry;
+    }
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

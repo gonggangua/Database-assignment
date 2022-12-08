@@ -19,6 +19,15 @@ public class Message implements Comparable<Message> {
         this.sender = sender;
     }
 
+    public Message(int id, int sid, String chname, String content, int sender, Timestamp sendTime) {
+        this.id = id;
+        this.sid = sid;
+        this.chname = chname;
+        this.content = content;
+        this.sender = sender;
+        this.sendTime = sendTime;
+    }
+
     public int getId() {
         return id;
     }

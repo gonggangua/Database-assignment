@@ -28,4 +28,14 @@ public class Channel {
     public boolean isType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "sid=" + sid +
+                ", name='" + name + '\'' +
+                ", cname='" + cname + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }

@@ -32,22 +32,22 @@
         select * from `joinedServers_${id}`
     </select>
 
-    <update id="login" parameterType="int">
+    <update id="login" parameterType="int" flushCache="true">
         update `selfView_${id}`
         set status = 'online'
     </update>
 
-    <update id="setStatus" parameterType="User">
+    <update id="setStatus" parameterType="User" flushCache="true">
         update `selfView_${id}`
         set status = #{status}
     </update>
 
-    <update id="logout" parameterType="int">
+    <update id="logout" parameterType="int" flushCache="true">
         update `selfView_${id}`
         set status = 'offline'
     </update>
 
-    <select id="getFriends" parameterType="User" resultType="User">
+    <select id="getFriends" parameterType="User" resultType="User" flushCache="true">
         select * from `friendsStatus_${id}`
     </select>
 

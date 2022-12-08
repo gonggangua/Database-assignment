@@ -18,4 +18,13 @@ public class AccessingChannel {
         accessTime = null;
         leaveTime = null;
     }
+
+    public AccessingChannel(int id, int uid, int sid, String chname, Timestamp accessTime, Timestamp leaveTime) {
+        this.id = id;
+        this.uid = uid;
+        this.sid = sid;
+        this.chname = chname;
+        this.accessTime = accessTime;
+        this.leaveTime = leaveTime;
+    }
 }

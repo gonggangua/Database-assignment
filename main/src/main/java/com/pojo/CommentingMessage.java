@@ -10,4 +10,13 @@ public class CommentingMessage {
         this.mid = mid;
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "CommentingMessage{" +
+                "uid=" + uid +
+                ", mid=" + mid +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

@@ -9,7 +9,7 @@
         (sender = #{id2} and receiver = #{id1})
     </select>
 
-    <insert id="insert" parameterType="PrivateMessage" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="PrivateMessage" useGeneratedKeys="true" keyProperty="id" flushCache="true">
         insert into privateMessages(sender, receiver, sendTime, content)
         values (#{sender}, #{receiver}, now(), #{content})
     </insert>

@@ -11,25 +11,43 @@ import com.dao.MessageMapper;
 import com.dao.ServerBlacklistMapper;
 import com.dao.ServerMapper;
 import com.exceptions.DuplicateNameException;
+import com.exceptions.LoginFailException;
 import com.exceptions.NoPermissionException;
 import com.utils.MybatisUtil;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 public class ServerInteract {
     private User cur;
-    private SqlSession sqlSession;
+    private Properties login;
     private Server server;
 
-    public ServerInteract(User cur, SqlSession sqlSession, Server server) {
+    public ServerInteract(User cur, Properties login, Server server) {
         this.cur = cur;
-        this.sqlSession = sqlSession;
+        this.login = login;
         this.server = server;
     }
+
+    private SqlSession getSqlSession() throws LoginFailException {
+        Properties login = new Properties();
+        SqlSession ret = null;
+        try {
+            ret = MybatisUtil.getSqlSession(login);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                e.printStackTrace();
+                throw new LoginFailException();
+            }
+        }
+        assert ret != null;
+        return ret;
+    }
+
 
     public List<Member> getMembers() {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -84,7 +102,7 @@ public class ServerInteract {
         map.put("sid", server.getId());
         GroupMapper groupMapper =
                 root.getMapper(GroupMapper.class);
-        if (!groupMapper.getCanStat(map)) {
+        if (!groupMapper.getCanStats(map)) {
             root.close();
             throw new NoPermissionException("access statistics");
         }
@@ -136,7 +154,7 @@ public class ServerInteract {
 
         ServerMapper mapper = root.getMapper(ServerMapper.class);
 
-        ServerStat stat = mapper.getServerStat(server);
+        ServerStat stat = mapper.getServerStats(server);
         root.close();
         return stat;
     }
@@ -209,6 +227,8 @@ public class ServerInteract {
                     root.getMapper(ChannelMapper.class);
             channelMapper.insert(channel);
         } catch (Exception e) {
+            root.commit();
+            root.close();
             throw new DuplicateNameException(name);
         }
 

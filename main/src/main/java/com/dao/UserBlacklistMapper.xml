@@ -8,23 +8,23 @@
         where uid = #{uid} and blockid = #{blockid}
     </select>
 
-    <insert id="insert" parameterType="UserBlacklist">
+    <insert id="insert" parameterType="UserBlacklist" flushCache="true">
         insert into userBlacklists
         values (#{uid}, #{blockid})
     </insert>
 
-    <delete id="delete" parameterType="UserBlacklist">
+    <delete id="delete" parameterType="UserBlacklist" flushCache="true">
         delete from userBlacklists
         where uid = #{uid} and blockid = #{blockid}
     </delete>
 
-    <update id="createBlacklistView" parameterType="User">
+    <update id="createBlacklistView" parameterType="User" flushCache="true">
         create view `blacklistView_${id}` as
         select * from userBlacklists
         where uid = #{id}
     </update>
 
-    <update id="grantBlacklistView" parameterType="User">
+    <update id="grantBlacklistView" parameterType="User" flushCache="true">
         grant select, show view on `blacklistView_${id}` to `${name}`
     </update>
 

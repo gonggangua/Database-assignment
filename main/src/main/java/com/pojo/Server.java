@@ -6,6 +6,13 @@ public class Server {
     private int creator;
     private boolean isPrivate;
 
+    public Server(int id, String name, int creator, boolean isPrivate) {
+        this.id = id;
+        this.name = name;
+        this.creator = creator;
+        this.isPrivate = isPrivate;
+    }
+
     public int getId() {
         return id;
     }
@@ -27,5 +34,15 @@ public class Server {
         this.name = name;
         this.creator = creator;
         this.isPrivate = isPrivate;
+    }
+
+    @Override
+    public String toString() {
+        return "Server{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", creator=" + creator +
+                ", isPrivate=" + isPrivate +
+                '}';
     }
 }

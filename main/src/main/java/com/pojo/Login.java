@@ -26,22 +26,31 @@ import java.util.List;
 import java.util.Properties;
 
 public class Login {
-    private SqlSession sqlSession;
+    Properties login;
     private User cur;
+
+    private SqlSession getSqlSession() throws LoginFailException {
+        SqlSession ret = null;
+        try {
+            ret = MybatisUtil.getSqlSession(login);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                e.printStackTrace();
+                throw new LoginFailException();
+            }
+        }
+        assert ret != null;
+        return ret;
+    }
 
     //构造登录, 连接到数据库
     public Login(String username, String password)
             throws LoginFailException {
-        Properties login = new Properties();
+        login = new Properties();
         login.setProperty("username", username);
         login.setProperty("password", password);
-        try {
-            sqlSession = MybatisUtil.getSqlSession(login);
-        } catch (Exception e) {
-            if (e instanceof PersistenceException) {
-                throw new LoginFailException();
-            }
-        }
+
+        SqlSession sqlSession = getSqlSession();
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         SqlSession root = MybatisUtil.getRootSqlSession();
         UserMapper userMapper = root.getMapper(UserMapper.class);
@@ -49,10 +58,17 @@ public class Login {
         root.close();
         mapper.login(cur.getId());
         sqlSession.commit();
+        sqlSession.close();
     }
 
     //登出
     public void logout() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         mapper.logout(cur.getId());
         sqlSession.commit();
@@ -74,9 +90,16 @@ public class Login {
                 break;
         }
         cur.setStatus(statusString);
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         mapper.setStatus(cur);
         sqlSession.commit();
+        sqlSession.close();
     }
 
     public User self() {
@@ -99,12 +122,21 @@ public class Login {
 
     //合并上两者
     public List<User> searchUser(Integer id, String name) {
-        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        if (id != null) {
-            return mapper.selectUserById(id);
-        } else {
-            return mapper.selectUserByName(name);
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
         }
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        List<User> users = null;
+        if (id != null) {
+            users = mapper.selectUserById(id);
+        } else {
+            users = mapper.selectUserByName(name);
+        }
+        sqlSession.close();
+        return users;
     }
 
     //充值
@@ -134,6 +166,8 @@ public class Login {
             serverMapper.insert(server);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                root.commit();
+                root.close();
                 throw new LevelLimitException();
             }
         }
@@ -186,18 +220,35 @@ public class Login {
 
     //合并上两者
     public List<Server> searchServer(Integer id, String name) {
-        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        if (id != null) {
-            return mapper.selectServerById(id);
-        } else {
-            return mapper.selectServerByName(name);
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
         }
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        List<Server> servers = null;
+        if (id != null) {
+            servers = mapper.selectServerById(id);
+        } else {
+            servers = mapper.selectServerByName(name);
+        }
+        sqlSession.close();
+        return servers;
     }
 
     //获得已加入的服务器
     public List<Server> getJoinedServers() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        return mapper.getJoinedServers(cur.getId());
+        List<Server> joinedServers = mapper.getJoinedServers(cur.getId());
+        sqlSession.close();
+        return joinedServers;
     }
 
     //加入服务器
@@ -210,6 +261,7 @@ public class Login {
         List<Server> joinedServers = getJoinedServers();
         for (Server joinedServer : joinedServers) {
             if (joinedServer.getId() == sid) {
+                root.close();
                 throw new AlreadyExistException();
             }
         }
@@ -228,6 +280,8 @@ public class Login {
             joiningServerMapper.insert(join);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                root.commit();
+                root.close();
                 throw new BlockedException();
             }
         }
@@ -238,16 +292,31 @@ public class Login {
 
     //查看好友
     public List<User> getFriends() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
         LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
-
-        return loginMapper.getFriends(cur);
+        List<User> friends = loginMapper.getFriends(cur);
+        sqlSession.close();
+        return friends;
     }
 
     //查看待通过好友请求
     public List<User> getRequests() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
         LoginMapper loginMapper = sqlSession.getMapper(LoginMapper.class);
 
-        return loginMapper.getRequests(cur);
+        List<User> requests = loginMapper.getRequests(cur);
+        sqlSession.close();
+        return  requests;
     }
 
     //发送好友请求
@@ -265,6 +334,8 @@ public class Login {
             friendsMapper.insert(friends);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                root.commit();
+                root.close();
                 throw new BlockedException();
             }
         }
@@ -284,6 +355,8 @@ public class Login {
             mapper.delete(friends);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                root.commit();
+                root.close();
                 throw new DoNotExistException();
             }
         }
@@ -294,7 +367,7 @@ public class Login {
 
     //接受好友请求
     public void acceptFriend(User user)
-            throws DoNotExistException, AlreadyExistException {
+            throws DoNotExistException, BlockedException {
         SqlSession root = MybatisUtil.getRootSqlSession();
         FriendsMapper mapper = root.getMapper(FriendsMapper.class);
 
@@ -303,6 +376,8 @@ public class Login {
             mapper.accept(friends);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                root.commit();
+                root.close();
                 throw new DoNotExistException();
             }
         }
@@ -311,7 +386,9 @@ public class Login {
             mapper.insert(both);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                throw new AlreadyExistException();
+                root.commit();
+                root.close();
+                throw new BlockedException();
             }
         }
 
@@ -330,6 +407,9 @@ public class Login {
             mapper.insert(blacklist);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                e.printStackTrace();
+                root.commit();
+                root.close();
                 throw new AlreadyExistException();
             }
         }
@@ -349,6 +429,9 @@ public class Login {
             mapper.delete(blacklist);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                e.printStackTrace();
+                root.commit();
+                root.close();
                 throw new DoNotExistException();
             }
         }
@@ -359,8 +442,16 @@ public class Login {
 
     //获取黑名单用户
     public List<User> getBlockedUsers() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        return mapper.getBlockedUsers(cur);
+        List<User> blockedUsers = mapper.getBlockedUsers(cur);
+        sqlSession.close();
+        return blockedUsers;
     }
 
     //发送私信
@@ -375,6 +466,8 @@ public class Login {
             messageMapper.insert(message);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                root.commit();
+                root.close();
                 throw new BlockedException();
             }
         }
@@ -399,6 +492,6 @@ public class Login {
 
     //进入服务器
     public ServerInteract enterServer(Server server) {
-        return new ServerInteract(cur, sqlSession, server);
+        return new ServerInteract(cur, login, server);
     }
 }

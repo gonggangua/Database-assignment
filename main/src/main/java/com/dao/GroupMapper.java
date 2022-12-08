@@ -14,7 +14,7 @@ public interface GroupMapper {
 
     boolean getCanBan(Map<String, Object> map);
 
-    boolean getCanStat(Map<String, Object> map);
+    boolean getCanStats(Map<String, Object> map);
 
     boolean getCanManage(Map<String, Object> map);
 }

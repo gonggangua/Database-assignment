@@ -8,4 +8,12 @@ public class CommentStat {
         this.likes = likes;
         this.dislikes = dislikes;
     }
+
+    @Override
+    public String toString() {
+        return "CommentStat{" +
+                "likes=" + likes +
+                ", dislikes=" + dislikes +
+                '}';
+    }
 }

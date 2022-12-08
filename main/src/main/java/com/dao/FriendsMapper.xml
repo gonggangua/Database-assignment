@@ -3,37 +3,37 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.FriendsMapper">
-    <insert id="insert" parameterType="Friends">
+    <insert id="insert" parameterType="Friends" flushCache="true">
         insert ignore into `friends`
         values (#{uid}, #{target}, #{status})
     </insert>
 
-    <update id="createFriendsView" parameterType="User">
+    <update id="createFriendsView" parameterType="User" flushCache="true">
         create view `friendsView_${id}` as
         select * from friends
         where (uid = #{id} or target = #{id})
     </update>
 
-    <update id="createFriendsStatus" parameterType="User">
+    <update id="createFriendsStatus" parameterType="User" flushCache="true">
         create view `friendsStatus_${id}` as
         select users.id, users.name, users.mail, users.level, users.`status`, users.registry from friends, users
         where (uid = #{id} and target = users.id and friends.status = true)
     </update>
 
-    <update id="grantFriendsView" parameterType="User">
+    <update id="grantFriendsView" parameterType="User" flushCache="true">
         grant select, show view on `friendsView_${id}` to `${name}`
     </update>
 
-    <update id="grantFriendsStatus" parameterType="User">
+    <update id="grantFriendsStatus" parameterType="User" flushCache="true">
         grant select, show view on `friendsStatus_${id}` to `${name}`
     </update>
 
-    <delete id="delete" parameterType="Friends">
+    <delete id="delete" parameterType="Friends" flushCache="true">
         delete from friends
         where uid = #{uid} and target = #{target}
     </delete>
 
-    <update id="accept" parameterType="Friends">
+    <update id="accept" parameterType="Friends" flushCache="true">
         update `friends`
         set `status` = true
         where uid = #{uid} and target = #{target}

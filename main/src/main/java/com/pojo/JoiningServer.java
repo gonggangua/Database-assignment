@@ -16,6 +16,13 @@ public class JoiningServer {
         time = new Timestamp(new Date().getTime());
     }
 
+    public JoiningServer(int uid, int sid, String gname, Timestamp time) {
+        this.uid = uid;
+        this.sid = sid;
+        this.gname = gname;
+        this.time = time;
+    }
+
     public int getUid() {
         return uid;
     }

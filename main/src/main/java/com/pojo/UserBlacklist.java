@@ -8,4 +8,12 @@ public class UserBlacklist {
         this.uid = uid;
         this.blockid = blockid;
     }
+
+    @Override
+    public String toString() {
+        return "UserBlacklist{" +
+                "uid=" + uid +
+                ", blockid=" + blockid +
+                '}';
+    }
 }

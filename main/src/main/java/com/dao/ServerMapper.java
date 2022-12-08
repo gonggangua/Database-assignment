@@ -19,5 +19,5 @@ public interface ServerMapper {
 
     void grantServerMembers(Map<String, Object> map);
 
-    ServerStat getServerStat(Server server);
+    ServerStat getServerStats(Server server);
 }

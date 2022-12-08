@@ -4,26 +4,26 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.UserMapper">
 
-    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id" flushCache="true">
         insert into users(`name`, `mail`, `level`, `status`, `registry`, `money`)
             values(#{name}, #{mail}, #{level}, #{status}, now(), #{money});
     </insert>
 
-    <update id="createUser" parameterType="map">
+    <update id="createUser" parameterType="map" flushCache="true">
         create user #{name} identified by #{password}
     </update>
 
-    <update id="createSelfView" parameterType="map">
+    <update id="createSelfView" parameterType="map" flushCache="true">
         create view SelfView_${id} as
         select * from users where `id` = #{id}
     </update>
 
-    <update id="grantSelfView" parameterType="map">
+    <update id="grantSelfView" parameterType="map" flushCache="true">
         grant select, show view on `SelfView_${id}` to `${name}`;
         grant update(`name`, `mail`, `status`) on `SelfView_${id}` to `${name}`;
     </update>
 
-    <update id="grantRegularUser" parameterType="map">
+    <update id="grantRegularUser" parameterType="map" flushCache="true">
         grant regularUser to #{name}
     </update>
 
@@ -46,7 +46,7 @@
         where `name` = #{name}
     </select>
 
-    <update id="charge" parameterType="map">
+    <update id="charge" parameterType="map" flushCache="true">
         update users
         set money = money + #{money}
         where id = #{id}

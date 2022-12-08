@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.ServerBlacklistMapper">
-    <insert id="insert" parameterType="ServerBlacklist">
+    <insert id="insert" parameterType="ServerBlacklist" flushCache="true">
         insert into serverBlacklists
         value (#{sid}, #{uid})
     </insert>
 
-    <delete id="delete" parameterType="ServerBlacklist">
+    <delete id="delete" parameterType="ServerBlacklist" flushCache="true">
         delete from serverBlacklists
         where sid = #{sid} and uid = {#uid}
     </delete>

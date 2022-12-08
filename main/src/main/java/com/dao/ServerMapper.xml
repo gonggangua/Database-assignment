@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.ServerMapper">
-    <insert id="insert" parameterType="Server" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="Server" useGeneratedKeys="true" keyProperty="id" flushCache="true">
         insert into servers(`name`, `creator`, `isPrivate`)
         values(#{name}, #{creator}, #{isPrivate});
     </insert>
@@ -22,17 +22,17 @@
         where `name` like '%${name}%'
     </select>
 
-    <update id="createServerMembers" parameterType="Server">
+    <update id="createServerMembers" parameterType="Server" flushCache="true">
         create view `members_${id}` as
         select `userBasicInfo`.*, joiningServer.gname, joiningServer.time from joiningServer, `userBasicInfo`
         where sid = #{id} and uid = `userBasicInfo`.id
     </update>
 
-    <update id="grantServerMembers" parameterType="map">
+    <update id="grantServerMembers" parameterType="map" flushCache="true">
         grant select, show view on `members_${sid}` to #{uname}
     </update>
 
-    <select id="getServerStat" parameterType="Server" resultType="ServerStat">
-        call getServerStat(#{id})
+    <select id="getServerStats" parameterType="Server" resultType="ServerStat" >
+        call getServerStats(#{id})
     </select>
 </mapper>

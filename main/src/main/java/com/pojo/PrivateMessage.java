@@ -19,6 +19,14 @@ public class PrivateMessage implements Comparable<PrivateMessage> {
         this.content = content;
     }
 
+    public PrivateMessage(int id, int sender, int receiver, Timestamp sendTime, String content) {
+        this.id = id;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.sendTime = sendTime;
+        this.content = content;
+    }
+
     @Override
     public String toString() {
         return "PrivateMessage{" +

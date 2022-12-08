@@ -8,9 +8,9 @@
         where sid = #{sid} and chname = #{name}
     </select>
 
-    <insert id="insert" parameterType="Message">
-        insert into messages(sender, receiver, sendTime, content)
-        values (#{sender}, #{receiver}, now(), #{content})
+    <insert id="insert" parameterType="Message" flushCache="true">
+        insert into messages(sid, chname, content, sender, sendTime)
+        values (#{sid}, #{chname}, #{content}, #{sender}, now())
     </insert>
     
     <select id="getNewMessages" parameterType="map" resultType="Message">

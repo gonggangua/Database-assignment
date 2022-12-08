@@ -40,4 +40,16 @@ public class Group {
     public boolean isCanStats() {
         return canStats;
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "sid=" + sid +
+                ", name='" + name + '\'' +
+                ", canCreate=" + canCreate +
+                ", canManage=" + canManage +
+                ", canBan=" + canBan +
+                ", canStats=" + canStats +
+                '}';
+    }
 }

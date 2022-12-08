@@ -1,4 +1,4 @@
-package pojo;
+package dao.pojo;
 
 import com.pojo.Register;
 import com.pojo.User;

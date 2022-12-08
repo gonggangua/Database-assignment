@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.JoiningServerMapper">
 
-    <insert id="insert" parameterType="JoiningServer">
+    <insert id="insert" parameterType="JoiningServer" flushCache="true">
         insert into `joiningServer`
         values (#{uid}, #{sid}, #{gname}, now())
     </insert>
@@ -14,14 +14,14 @@
         where uid = #{uid} and sid = #{sid}
     </select>
 
-    <update id="createJoinedServers" parameterType="User">
+    <update id="createJoinedServers" parameterType="User" flushCache="true">
         create view `joinedServers_${id}` as
         select servers.* from joiningServer, servers
         where joiningServer.uid = #{id} and
         joiningServer.sid = servers.id
     </update>
 
-    <update id="grantJoinedServers" parameterType="User">
+    <update id="grantJoinedServers" parameterType="User" flushCache="true">
         grant select, show view on `joinedServers_${id}` to #{name}
     </update>
 
@@ -31,7 +31,7 @@
         where id = uid and sid = #{id}
     </select>
     
-    <update id="setGroup" parameterType="JoiningServer">
+    <update id="setGroup" parameterType="JoiningServer" flushCache="true">
         update joiningServer
         set gname = #{gname}
         where id = #{uid} and sid = #{sid}
