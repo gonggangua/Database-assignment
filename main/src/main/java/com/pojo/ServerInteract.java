@@ -49,7 +49,7 @@ public class ServerInteract {
         return ret;
     }
 
-
+    //获取频道成员
     public List<Member> getMembers() {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -61,6 +61,7 @@ public class ServerInteract {
         return ret;
     }
 
+    //获取某人在某服务器所属用户组
     private Group getGroup(User user, Server server, SqlSession root) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("uid", user.getId());
@@ -70,6 +71,7 @@ public class ServerInteract {
         return groupMapper.getUserGroup(map).get(0);
     }
 
+    //以下为确认四种权限
     private void checkCreate(User user, Server server, SqlSession root)
             throws NoPermissionException {
         HashMap<String, Object> map = new HashMap<>();
@@ -122,6 +124,7 @@ public class ServerInteract {
         }
     }
 
+    //获取权限组
     public List<Group> getGroups() {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -132,6 +135,7 @@ public class ServerInteract {
         return groups;
     }
 
+    //禁止用户
     public void ban(User user)
             throws NoPermissionException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -146,6 +150,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //解禁用户
     public void unban(User user)
             throws NoPermissionException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -160,6 +165,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //获取服务器统计数据
     public ServerStat getServerStat()
             throws NoPermissionException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -172,6 +178,7 @@ public class ServerInteract {
         return stat;
     }
 
+    //改变某成员所属用户组
     public void ManageMember(Member member, Group group)
             throws NoPermissionException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -187,6 +194,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //创建分区
     public void createCategory(String name)
             throws NoPermissionException, DuplicateNameException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -216,6 +224,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //设置分区对某用户组可见
     public void setVisible(Category category, Group group)
             throws NoPermissionException, AlreadyExistException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -237,6 +246,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //设置不可见
     public void removeVisible(Category category, Group group)
             throws NoPermissionException, AlreadyExistException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -252,6 +262,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //获取可见的分区
     public List<Category> getCategories() {
         SqlSession root = MybatisUtil.getRootSqlSession();
         HashMap<String, Object> map = new HashMap<>();
@@ -263,6 +274,7 @@ public class ServerInteract {
         return list;
     }
 
+    //创建频道
     public void createChannel(Category category, String name, boolean type)
             throws NoPermissionException, DuplicateNameException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -285,6 +297,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //获取分区内频道
     public List<Channel> getChannels(Category category) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -295,6 +308,7 @@ public class ServerInteract {
         return ret;
     }
 
+    //访问频道
     public AccessingChannel accessChannel(Channel channel) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -309,6 +323,7 @@ public class ServerInteract {
         return ret;
     }
 
+    //结束访问
     public void leaveChannel(AccessingChannel accessing) {
         SqlSession root = MybatisUtil.getRootSqlSession();
         AccessingChannelMapper mapper =
@@ -319,6 +334,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //发送消息
     public void sendMessage(Channel channel, String content) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -331,6 +347,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //获取消息
     public List<Message> getMessages(Channel channel) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -342,6 +359,7 @@ public class ServerInteract {
         return ret;
     }
 
+    //获取从上次离开之后的新消息
     public List<Message> getNewMessages(Channel channel) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -358,6 +376,7 @@ public class ServerInteract {
         return ret;
     }
 
+    //评价某消息(重复两次相同类型则可以取消评价，用触发器实现)
     public void commentMessage(Message message, String type) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
@@ -371,6 +390,7 @@ public class ServerInteract {
         root.close();
     }
 
+    //获取某消息评价统计
     public CommentStat getComments(Message message) {
         SqlSession root = MybatisUtil.getRootSqlSession();
         CommentingMessageMapper mapper =
