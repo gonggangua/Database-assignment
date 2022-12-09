@@ -30,7 +30,7 @@ public class Register {
             user = userMapper.selectByAccurateName(name).get(0);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                throw  new DuplicateNameException(name);
+                throw new DuplicateNameException(name);
             }
         }
         map.put("id", user.getId());
