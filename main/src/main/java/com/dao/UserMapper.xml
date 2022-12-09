@@ -52,4 +52,8 @@
         where id = #{id}
     </update>
 
+    <update id="upgrade" parameterType="User">
+        call `upgrade`(#{id})
+    </update>
+
 </mapper>

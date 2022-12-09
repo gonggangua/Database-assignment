@@ -15,6 +15,7 @@ import com.exceptions.CannotBeNullException;
 import com.exceptions.DoNotExistException;
 import com.exceptions.LevelLimitException;
 import com.exceptions.LoginFailException;
+import com.exceptions.NoEnoughMoneyException;
 import com.pojo.types.UserStatus;
 import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
@@ -149,6 +150,23 @@ public class Login {
         map.put("money", money);
         mapper.charge(map);
         cur.setMoney(cur.getMoney() + money);
+
+        root.commit();
+        root.close();
+    }
+
+    public void upgrade()
+            throws NoEnoughMoneyException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        UserMapper mapper = root.getMapper(UserMapper.class);
+        try {
+            mapper.upgrade(cur);
+        } catch (PersistenceException e) {
+            root.commit();
+            root.close();
+            throw new NoEnoughMoneyException();
+        }
+        cur = mapper.selectById(cur.getId()).get(0);
 
         root.commit();
         root.close();

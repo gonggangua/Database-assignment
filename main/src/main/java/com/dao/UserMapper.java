@@ -25,4 +25,6 @@ public interface UserMapper {
     List<User> selectByName(String name);
 
     List<User> selectByAccurateName(String name);
+
+    void upgrade(User user);
 }
