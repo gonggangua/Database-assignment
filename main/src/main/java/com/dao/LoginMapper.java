@@ -6,6 +6,8 @@ import com.pojo.User;
 import java.util.List;
 
 public interface LoginMapper {
+    void setRole();
+
     List<User> selectUserById(int id);
 
     List<User> selectUserByName(String name);

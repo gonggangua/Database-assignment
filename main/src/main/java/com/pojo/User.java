@@ -19,6 +19,9 @@ public class User {
     private Timestamp registry;
     private int money;
 
+    public User() {
+    }
+
     public User(String name, String mail) {
         id = 0;
         this.name = name;

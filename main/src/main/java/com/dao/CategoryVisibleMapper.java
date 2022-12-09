@@ -10,5 +10,7 @@ import java.util.Map;
 public interface CategoryVisibleMapper {
     void insert(CategoryVisible visible);
 
+    void delete(CategoryVisible visible);
+
     List<Category> getVisibleCategories(Map<String, Object> map);
 }

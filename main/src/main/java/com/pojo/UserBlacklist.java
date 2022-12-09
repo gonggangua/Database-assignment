@@ -4,6 +4,9 @@ public class UserBlacklist {
     private int uid;
     private int blockid;
 
+    public UserBlacklist() {
+    }
+
     public UserBlacklist(int uid, int blockid) {
         this.uid = uid;
         this.blockid = blockid;

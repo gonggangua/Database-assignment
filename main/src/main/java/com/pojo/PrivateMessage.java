@@ -11,6 +11,9 @@ public class PrivateMessage implements Comparable<PrivateMessage> {
     private Timestamp sendTime;
     private String content;
 
+    public PrivateMessage() {
+    }
+
     public PrivateMessage(int sender, int receiver, String content) {
         id = 0;
         this.sender = sender;

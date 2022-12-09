@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.LoginMapper">
+    <update id="setRole">
+        set role all
+    </update>
 
     <select id="selectUserById" parameterType="int" resultType="User">
         select * from userBasicInfo

@@ -8,6 +8,11 @@
         values (#{sid}, #{cname}, #{gname})
     </insert>
 
+    <delete id="delete" parameterType="CategoryVisible">
+        delete from `categoryVisible`
+        where sid = #{sid} and cname = #{cname} and gname = #{gname}
+    </delete>
+
     <select id="getVisibleCategories" parameterType="map" resultType="Category">
         call getVisibleCategories(#{uid}, #{sid})
     </select>

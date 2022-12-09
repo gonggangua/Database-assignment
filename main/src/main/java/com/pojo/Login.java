@@ -56,6 +56,7 @@ public class Login {
         UserMapper userMapper = root.getMapper(UserMapper.class);
         cur = userMapper.selectByAccurateName(username).get(0);
         root.close();
+        mapper.setRole();
         mapper.login(cur.getId());
         sqlSession.commit();
         sqlSession.close();
@@ -407,7 +408,6 @@ public class Login {
             mapper.insert(blacklist);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                e.printStackTrace();
                 root.commit();
                 root.close();
                 throw new AlreadyExistException();
@@ -429,7 +429,6 @@ public class Login {
             mapper.delete(blacklist);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                e.printStackTrace();
                 root.commit();
                 root.close();
                 throw new DoNotExistException();

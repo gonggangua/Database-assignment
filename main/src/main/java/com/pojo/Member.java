@@ -9,6 +9,9 @@ public class Member {
     private String gname;
     private Timestamp time;
 
+    public Member() {
+    }
+
     public Member(int id, String name, String status, String gname, Timestamp time) {
         this.id = id;
         this.name = name;

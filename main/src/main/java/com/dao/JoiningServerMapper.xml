@@ -34,7 +34,7 @@
     <update id="setGroup" parameterType="JoiningServer" flushCache="true">
         update joiningServer
         set gname = #{gname}
-        where id = #{uid} and sid = #{sid}
+        where uid = #{uid} and sid = #{sid}
     </update>
 
 </mapper>

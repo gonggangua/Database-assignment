@@ -10,6 +10,9 @@ public class Call {
     private Timestamp startTime;
     private Timestamp endTime;
 
+    public Call() {
+    }
+
     public Call(int id, int sid, String chname, Timestamp startTime, Timestamp endTime) {
         this.id = id;
         this.sid = sid;

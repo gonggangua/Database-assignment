@@ -9,6 +9,9 @@ public class JoiningServer {
     private String gname;
     private Timestamp time;
 
+    public JoiningServer() {
+    }
+
     public JoiningServer(int uid, int sid, String gname) {
         this.uid = uid;
         this.sid = sid;

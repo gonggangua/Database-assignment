@@ -5,6 +5,9 @@ public class Friends {
     private int target;
     private boolean status;
 
+    public Friends() {
+    }
+
     public Friends(int uid, int target, boolean status) {
         this.uid = uid;
         this.target = target;

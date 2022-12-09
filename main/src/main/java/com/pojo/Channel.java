@@ -6,6 +6,9 @@ public class Channel {
     private String cname;
     private boolean type;
 
+    public Channel() {
+    }
+
     public Channel(int sid, String name, String cname, boolean type) {
         this.sid = sid;
         this.name = name;

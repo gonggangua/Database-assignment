@@ -10,6 +10,7 @@ import com.dao.JoiningServerMapper;
 import com.dao.MessageMapper;
 import com.dao.ServerBlacklistMapper;
 import com.dao.ServerMapper;
+import com.exceptions.AlreadyExistException;
 import com.exceptions.DuplicateNameException;
 import com.exceptions.LoginFailException;
 import com.exceptions.NoPermissionException;
@@ -121,6 +122,16 @@ public class ServerInteract {
         }
     }
 
+    public List<Group> getGroups() {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+
+        GroupMapper mapper = root.getMapper(GroupMapper.class);
+        List<Group> groups = mapper.selectByServer(server);
+
+        root.close();
+        return groups;
+    }
+
     public void ban(User user)
             throws NoPermissionException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -131,6 +142,7 @@ public class ServerInteract {
         ServerBlacklist blacklist = new ServerBlacklist(server.getId(), user.getId());
         mapper.insert(blacklist);
 
+        root.commit();
         root.close();
     }
 
@@ -144,6 +156,7 @@ public class ServerInteract {
         ServerBlacklist blacklist = new ServerBlacklist(server.getId(), user.getId());
         mapper.delete(blacklist);
 
+        root.commit();
         root.close();
     }
 
@@ -199,6 +212,42 @@ public class ServerInteract {
             visibleMapper.insert(creatorVisible);
         }
 
+        root.commit();
+        root.close();
+    }
+
+    public void setVisible(Category category, Group group)
+            throws NoPermissionException, AlreadyExistException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+
+        checkCreate(cur, server, root);
+
+        CategoryVisible visible =
+                new CategoryVisible(category.getSid(), category.getName(), group.getName());
+        CategoryVisibleMapper visibleMapper =
+                root.getMapper(CategoryVisibleMapper.class);
+        try {
+            visibleMapper.insert(visible);
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                throw new AlreadyExistException();
+            }
+        }
+        root.commit();
+        root.close();
+    }
+
+    public void removeVisible(Category category, Group group)
+            throws NoPermissionException, AlreadyExistException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+
+        checkCreate(cur, server, root);
+
+        CategoryVisible visible =
+                new CategoryVisible(category.getSid(), category.getName(), group.getName());
+        CategoryVisibleMapper visibleMapper =
+                root.getMapper(CategoryVisibleMapper.class);
+        visibleMapper.delete(visible);
         root.commit();
         root.close();
     }

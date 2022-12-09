@@ -8,6 +8,9 @@ public class ServerStat {
     private int callCnt;
     private Time totalTime;
 
+    public ServerStat() {
+    }
+
     public ServerStat(int messageCnt, int totalLength, int callCnt, Time totalTime) {
         this.messageCnt = messageCnt;
         this.totalLength = totalLength;

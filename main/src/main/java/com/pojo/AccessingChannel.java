@@ -10,6 +10,9 @@ public class AccessingChannel {
     private Timestamp accessTime;
     private Timestamp leaveTime;
 
+    public AccessingChannel() {
+    }
+
     public AccessingChannel(int uid, int sid, String chname) {
         id = 0;
         this.uid = uid;

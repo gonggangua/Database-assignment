@@ -5,6 +5,9 @@ public class CategoryVisible {
     private String cname;
     private String gname;
 
+    public CategoryVisible() {
+    }
+
     public CategoryVisible(int sid, String cname, String gname) {
         this.sid = sid;
         this.cname = cname;

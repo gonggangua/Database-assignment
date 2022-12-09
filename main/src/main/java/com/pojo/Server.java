@@ -6,6 +6,15 @@ public class Server {
     private int creator;
     private boolean isPrivate;
 
+    public Server() {
+    }
+
+    public Server(int id, String name, int creator) {
+        this.id = id;
+        this.name = name;
+        this.creator = creator;
+    }
+
     public Server(int id, String name, int creator, boolean isPrivate) {
         this.id = id;
         this.name = name;

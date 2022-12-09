@@ -8,6 +8,11 @@
         values (#{sid}, #{name}, #{canCreate}, #{canBan}, #{canManage}, #{canStats})
     </insert>
 
+    <select id="selectByServer" parameterType="Server" resultType="Group">
+        select * from `groups`
+        where sid = #{id}
+    </select>
+
     <select id="getUserGroup" parameterType="map" resultType="Group">
         call getGroup(#{uid}, #{sid})
     </select>

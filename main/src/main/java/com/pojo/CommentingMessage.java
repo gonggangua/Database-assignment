@@ -5,6 +5,9 @@ public class CommentingMessage {
     private int mid;
     private String type;
 
+    public CommentingMessage() {
+    }
+
     public CommentingMessage(int uid, int mid, String type) {
         this.uid = uid;
         this.mid = mid;

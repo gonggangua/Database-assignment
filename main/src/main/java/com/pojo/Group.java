@@ -8,6 +8,9 @@ public class Group {
     private boolean canBan;
     private boolean canStats;
 
+    public Group() {
+    }
+
     public Group(int sid, String name, boolean canCreate, boolean canManage, boolean canBan, boolean canStats) {
         this.sid = sid;
         this.name = name;
