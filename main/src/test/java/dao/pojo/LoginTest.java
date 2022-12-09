@@ -30,6 +30,8 @@ public class LoginTest {
     public void testCreateServer() throws Exception {
         Register.register("Elon", "password", "ElonMa@twitter.com");
         Login testLogin = new Login("Elon", "password");
+        testLogin.charge(110);
+        testLogin.upgrade();
         testLogin.createServer("Tesla", false);
         testLogin.logout();
     }

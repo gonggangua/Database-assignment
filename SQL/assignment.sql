@@ -609,6 +609,25 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `upgrade` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `upgrade` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `upgrade`(id int)
+begin
+    if (select money from users 
+        where users.id = id) > 100 then
+    update users
+    set `level` = `level` + 1, money = money - 100
+    where users.id = id;
+    else 
+        signal sqlstate '12455';
+    end if;
+end */$$
+DELIMITER ;
+
 /*Table structure for table `publicserver` */
 
 DROP TABLE IF EXISTS `publicserver`;

@@ -41,6 +41,8 @@ public class Login {
             }
         }
         assert ret != null;
+        LoginMapper mapper = ret.getMapper(LoginMapper.class);
+        mapper.setRole();
         return ret;
     }
 
@@ -57,7 +59,6 @@ public class Login {
         UserMapper userMapper = root.getMapper(UserMapper.class);
         cur = userMapper.selectByAccurateName(username).get(0);
         root.close();
-        mapper.setRole();
         mapper.login(cur.getId());
         sqlSession.commit();
         sqlSession.close();
