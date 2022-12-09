@@ -156,6 +156,7 @@ public class Login {
         root.close();
     }
 
+    //升级，增大创建服务器数上限
     public void upgrade()
             throws NoEnoughMoneyException {
         SqlSession root = MybatisUtil.getRootSqlSession();
