@@ -5,6 +5,7 @@ import com.exceptions.BlockedException;
 import com.exceptions.CannotBeNullException;
 import com.exceptions.DoNotExistException;
 import com.exceptions.DuplicateNameException;
+import com.exceptions.LevelLimitException;
 import com.exceptions.LoginFailException;
 import com.exceptions.NoPermissionException;
 import com.pojo.AccessingChannel;
@@ -30,9 +31,14 @@ public class LoginTest {
     public void testCreateServer() throws Exception {
         Register.register("Elon", "password", "ElonMa@twitter.com");
         Login testLogin = new Login("Elon", "password");
+        testLogin.createServer("Tesla", false);
+        try {
+            testLogin.createServer("Twitter", false);
+        } catch (LevelLimitException e) {
+            System.out.println("limit.");
+        }
         testLogin.charge(110);
         testLogin.upgrade();
-        testLogin.createServer("Tesla", false);
         testLogin.logout();
     }
 
