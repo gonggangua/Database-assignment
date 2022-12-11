@@ -23,8 +23,9 @@
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
+                    <include>static/**</include>
+                    <include>template/**</include>
                 </includes>
-                <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>src/main/java</directory>
@@ -32,7 +33,6 @@
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
                 </includes>
-                <filtering>true</filtering>
             </resource>
         </resources>
     </build>
