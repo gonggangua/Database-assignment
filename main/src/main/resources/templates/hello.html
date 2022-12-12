@@ -41,17 +41,21 @@
           body: {
             type: 'form',
             mode: 'horizontal',
-            api: '/saveForm',
+            api: "/hello",
             body: [
               {
                 label: 'Name',
                 type: 'input-text',
-                name: 'name'
+                name: 'username'
               },
               {
-                label: 'Email',
-                type: 'input-email',
-                name: 'email'
+                label: 'Password',
+                type: 'input-password',
+                name: 'password'
+              },
+              {
+                type: 'static-tpl',
+                tpl: "您的密码强度为: ${strength}"
               }
             ]
           }
