@@ -12,6 +12,11 @@
         select * from servers
     </select>
 
+    <delete id="dismiss" parameterType="Server">
+        delete * from servers
+        where id = #{id}
+    </delete>
+
     <select id="selectById" parameterType="int" resultType="Server">
         select * from servers
         where id = #{id}

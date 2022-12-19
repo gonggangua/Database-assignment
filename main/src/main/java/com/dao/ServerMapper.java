@@ -9,6 +9,8 @@ import java.util.Map;
 public interface ServerMapper {
     void insert(Server server);
 
+    void dismiss(Server server);
+
     List<Server> selectAll();
 
     List<Server> selectById(int id);

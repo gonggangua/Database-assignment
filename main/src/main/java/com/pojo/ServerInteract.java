@@ -124,6 +124,20 @@ public class ServerInteract {
         }
     }
 
+    //解散服务器
+    public void dismiss() throws NoPermissionException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        if (!getGroup(cur, server, root).getName().equals("creator")) {
+            root.close();
+            throw new NoPermissionException("dismiss server");
+        }
+
+        ServerMapper serverMapper = root.getMapper(ServerMapper.class);
+        serverMapper.dismiss(server);
+        root.commit();
+        root.close();
+    }
+
     //获取权限组
     public List<Group> getGroups() {
         SqlSession root = MybatisUtil.getRootSqlSession();
