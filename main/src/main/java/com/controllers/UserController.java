@@ -12,7 +12,8 @@ import java.util.*;
 
 @RestController
 public class UserController {
-    private final HashMap<String, Login> loginHashMap = new HashMap<>();
+    private static final HashMap<String, Login> loginHashMap = new HashMap<>();
+    private static final HashMap<String, AccessingChannel> accessingChannelHashMap = new HashMap<>();
 
     @RequestMapping("/user/checkcorrect")
     public Object loginCheck(@RequestParam String user_name, @RequestParam String password) {
@@ -450,7 +451,7 @@ public class UserController {
     }
 
     @RequestMapping("/servers/join_call")
-    public Object sendMessages(@RequestParam String user_name, @RequestParam String server_name,
+    public Object joinCall(@RequestParam String user_name, @RequestParam String server_name,
                                @RequestParam String category_name, @RequestParam String channel_name) {
         Login login = getLogin(user_name);
         if (login == null) {
@@ -489,7 +490,56 @@ public class UserController {
         if (channel == null) {
             return new RetBody("Invalid channel_name!");
         }
-        si.
+        AccessingChannel accessingChannel = si.accessChannel(channel);
+        String key = "username=" + user_name + "&channel_name=" + channel_name;
+        accessingChannelHashMap.put(key, accessingChannel);
+        return retBody;
+    }
+
+    @RequestMapping("/servers/leave_call")
+    public Object leaveCall(@RequestParam String user_name, @RequestParam String server_name,
+                           @RequestParam String category_name, @RequestParam String channel_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        RetBody retBody = new RetBody("Successful!");
+        List<Server> servers = login.getJoinedServers();
+        Server server = null;
+        for (Server temp : servers) {
+            if (temp.getName().equals(server_name)) {
+                server = temp;
+                break;
+            }
+        }
+        if (server == null) {
+            return new RetBody("You are not in this server!");
+        }
+        ServerInteract si = login.enterServer(server);
+        Category category = null;
+        for (Category temp : si.getCategories()) {
+            if (temp.getName().equals(category_name)) {
+                category = temp;
+                break;
+            }
+        }
+        if (category == null) {
+            return new RetBody("Invalid category_name!");
+        }
+        Channel channel = null;
+        for (Channel temp : si.getChannels(category)) {
+            if (temp.getName().equals(channel_name)) {
+                channel = temp;
+                break;
+            }
+        }
+        if (channel == null) {
+            return new RetBody("Invalid channel_name!");
+        }
+        String key = "username=" + user_name + "&channel_name=" + channel_name;
+        AccessingChannel accessingChannel = accessingChannelHashMap.get(key);
+        si.leaveChannel(accessingChannel);
+        //accessingChannelHashMap.remove(key);
         return retBody;
     }
 }
