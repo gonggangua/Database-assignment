@@ -18,6 +18,6 @@ public class ServerBody {
     }
 
     public void addCategory(CategoryBody category) {
-        this.categories = categories;
+        this.categories.add(category);
     }
 }
