@@ -12,6 +12,8 @@ public interface LoginMapper {
 
     List<User> selectUserByName(String name);
 
+    List<User> selectByAccurateName(String name);
+
     List<User> selectSelf(String name);
 
     List<Server> selectServerById(int id);

@@ -114,6 +114,21 @@ public class Login {
         return searchUser(id, null);
     }
 
+    //用户名精确检索
+    public List<User> searchAccurateName(String name) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        List<User> users = null;
+        users = mapper.selectByAccurateName(name);
+        sqlSession.close();
+        return users;
+    }
+
     //用户名搜索用户
     public List<User> searchUser(String name)
             throws CannotBeNullException {

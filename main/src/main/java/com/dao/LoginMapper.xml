@@ -17,6 +17,11 @@
         where `name` like '%${name}%'
     </select>
 
+    <select id="selectByAccurateName" parameterType="String" resultType="User">
+        select * from userBasicInfo
+        where `name` = #{name}
+    </select>
+
     <select id="selectSelf" parameterType="String" resultType="User">
         select * from `selfView_${id}`
     </select>
