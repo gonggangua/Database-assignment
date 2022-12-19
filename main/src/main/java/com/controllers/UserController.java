@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController("/user")
 public class UserController {
-    private HashMap<String, Login> loginHashMap;
+    private final HashMap<String, Login> loginHashMap = new HashMap<>();
 
     @RequestMapping("/checkcorrect")
     public Object loginCheck(@RequestParam String user_name, @RequestParam String password) {
@@ -54,7 +54,17 @@ public class UserController {
 
     @RequestMapping("/checkexist")
     public Object registerCheck(@RequestParam String user_name) {
-
+        try {
+            Register.checkName(user_name);
+            RetBody retBody = new RetBody("");
+            retBody.addData("exist", false);
+            return retBody;
+        } catch (DuplicateNameException e) {
+            e.printStackTrace();
+            RetBody retBody = new RetBody("");
+            retBody.addData("exist", true);
+            return retBody;
+        }
     }
 
     @RequestMapping("/signup")
@@ -88,5 +98,36 @@ public class UserController {
         retBody.addData("registry", user.getRegistry());
         retBody.addData("money", user.getMoney());
         return retBody;
+    }
+
+    @RequestMapping("/change")
+    public Object changeInfo(@RequestParam String user_name, @RequestBody Map<String, Object> map) {
+        User user = getUser(user_name);
+        if (user == null) {
+            return new RetBody("User is not logged in!");
+        }
+        if (map.containsKey("user_name")) {
+            user.setName((String) map.get("user_name"));
+        }
+        if (map.containsKey("mail")) {
+            user.setName((String) map.get("mail"));
+        }
+        if (map.containsKey("level")) {
+            user.setLevel((int) map.get("level"));
+        }
+        if (map.containsKey("money")) {
+            user.setMoney((int) map.get("money"));
+        }
+        return new RetBody("Success!");
+    }
+
+    @RequestMapping("/other_info")
+    public Object getOtherInfo(@RequestParam String other_user_name) {
+
+    }
+
+    @RequestMapping("/charge")
+    public Object charge(@RequestParam String user_name, @RequestParam int amount) {
+
     }
 }
