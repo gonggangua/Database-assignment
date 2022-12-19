@@ -114,6 +114,7 @@ public class Login {
         return searchUser(id, null);
     }
 
+    //用户名精确检索
     public List<User> searchAccurateName(String name) {
         SqlSession sqlSession = null;
         try {
