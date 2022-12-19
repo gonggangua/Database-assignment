@@ -12,6 +12,16 @@ import org.apache.ibatis.session.SqlSession;
 import java.util.HashMap;
 
 public class Register {
+    public static void checkName(String name)
+            throws DuplicateNameException {
+        SqlSession sqlSession = MybatisUtil.getRootSqlSession();
+
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+        if (!userMapper.selectByAccurateName(name).isEmpty()) {
+            throw new DuplicateNameException(name);
+        }
+    }
 
     public static void register(String name, String password, String mail)
             throws DuplicateNameException {
