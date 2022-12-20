@@ -581,7 +581,7 @@ public class UserController {
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<User> friends = login.searchAccurateName(other_user_name);
+        List<User> friends = login.searchUserByAccurateName(other_user_name);
         if (friends.size() == 0) {
             return new RetBody("Invalid other_user_name");
         }
@@ -604,7 +604,7 @@ public class UserController {
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<User> friends = login.searchAccurateName(other_user_name);
+        List<User> friends = login.searchUserByAccurateName(other_user_name);
         if (friends.size() == 0) {
             return new RetBody("Invalid other_user_name");
         }
@@ -682,12 +682,12 @@ public class UserController {
             return res;
         }
         res.add(login);
-        Server server = //TODO
-        if (server == null) {
-            res.add(new RetBody("Invalid server_name!"));
+        List<Server> servers = login.searchServerByAccurateName(server_name);
+        if (servers.size() == 0) {
+            res.add(new RetBody("Server not found!"));
             return res;
         }
-        res.add(server);
+        res.add(servers.get(0));
         res.add(new RetBody("Successful!"));
         return res;
     }
@@ -706,17 +706,91 @@ public class UserController {
         return retBody;
     }
 
-    @RequestMapping("/servers/server_info_change")
-    public Object changeServerInfo(@RequestParam String user_name, @RequestParam String server_name,
-                                   @RequestBody Map<String, Object> map) {
-        List<Object> objects = findLoginAndServer(user_name, server_name);
-        if (objects.size() < 3) {
-            return objects.get(objects.size() - 1);
+    @RequestMapping("/servers/create")
+    public Object createServer(@RequestParam String user_name, @RequestBody Map<String, Object> map) {
+        String server_name = (String) map.get("server_name");
+        //String owner_name = (String) map.get("owner_name");
+        boolean isPrivate = (boolean) map.get("isPrivate");
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
         }
-        Login login = (Login) objects.get(0);
-        Server server = (Server) objects.get(1);
+        try {
+            login.createServer(server_name, isPrivate);
+        } catch (LevelLimitException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
+    }
+
+    @RequestMapping("/servers/checkcreate")
+    public Object checkCreateServer(@RequestParam String user_name, @RequestParam String server_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        RetBody retBody = new RetBody("Successful!");
+        List<Server> servers = login.searchServerByAccurateName(server_name);
+        retBody.addData("exist", servers.size() > 0);
+        int userId = login.self().getId();
+        int cnt = 0;
+        List<Server> joinServers = login.getJoinedServers();
+        for (Server server : joinServers) {
+            if (server.getCreator() == userId) {
+                cnt++;
+            }
+        }
+        retBody.addData("full", cnt >= login.self().getLevel());
+        return retBody;
+    }
+
+    @RequestMapping("/servers/checkuser")
+    public Object checkUserAndServer(@RequestParam String user_name, @RequestParam String server_name) {
+
+    }
+
+    @RequestMapping("/servers/join")
+    public Object joinServer(@RequestParam String user_name, @RequestParam String server_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<Server> servers = login.searchServerByAccurateName(server_name);
+        if (servers.size() == 0) {
+            return new RetBody("Server not found!");
+        }
+        Server server = servers.get(0);
+        try {
+            login.joinServer(server);
+        } catch (AlreadyExistException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        } catch (BlockedException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
+    }
+
+    @RequestMapping("/servers/quit")
+    public Object dismissServer(@RequestParam String user_name, @RequestParam String server_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<Server> servers = login.searchServerByAccurateName(server_name);
+        if (servers.size() == 0) {
+            return new RetBody("Server not found!");
+        }
+        Server server = servers.get(0);
         ServerInteract si = login.enterServer(server);
-        si.//TODO
-        return (RetBody) objects.get(2);
+        try {
+            si.dismiss();
+        } catch (NoPermissionException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
     }
 }
