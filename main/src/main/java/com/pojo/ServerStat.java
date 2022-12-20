@@ -18,6 +18,22 @@ public class ServerStat {
         this.totalTime = totalTime;
     }
 
+    public int getMessageCnt() {
+        return messageCnt;
+    }
+
+    public int getTotalLength() {
+        return totalLength;
+    }
+
+    public int getCallCnt() {
+        return callCnt;
+    }
+
+    public Time getTotalTime() {
+        return totalTime;
+    }
+
     @Override
     public String toString() {
         return "ServerStat{" +

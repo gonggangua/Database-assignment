@@ -51,6 +51,17 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/user/logout")
+    public Object logout(@RequestParam String user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        login.logout();
+        loginHashMap.remove(user_name);
+        return new RetBody("Logout successful!");
+    }
+
     @RequestMapping("/user/checkexist")
     public Object registerCheck(@RequestParam String user_name) {
         try {
@@ -156,12 +167,16 @@ public class UserController {
 
     @RequestMapping("/user/levelup")
     public Object levelUp(@RequestParam String user_name) {
-        User user = getUser(user_name);
-        if (user == null) {
+        Login login = getLogin(user_name);
+        if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        user.setMoney(user.getMoney() - 300);
-        user.setLevel(user.getLevel() + 1);
+        try {
+            login.upgrade();
+        } catch (NoEnoughMoneyException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
         return new RetBody("LevelUp successful!");
     }
 
@@ -297,6 +312,12 @@ public class UserController {
         retBody.addData("canManage", group.isCanManage());
         retBody.addData("canStats", group.isCanStats());
         return retBody;
+    }
+
+    @RequestMapping("/servers/group_info_change")
+    public Object changeGroupInfo(/*@RequestParam String user_name, @RequestParam String server_name,
+                                  @RequestParam String group_name, @RequestBody Map<String, Object> map*/) {
+        return new RetBody("该功能尚未开发，请以后再来探索吧！");
     }
 
     @RequestMapping("/servers/checkowner")
@@ -627,9 +648,9 @@ public class UserController {
         }
         RetBody retBody = new RetBody("Successful!");
         try {
-            List<Server> servers = login.searchServer(keyword);
-            List<HashMap<String, String>> bodies = new ArrayList<>();
-            for (Server server : servers) {
+            List<Server> serverObjects = login.searchServer(keyword);
+            List<HashMap<String, String>> servers = new ArrayList<>();
+            for (Server server : serverObjects) {
                 if (server.isPrivate()) {
                     continue;
                 }
@@ -638,9 +659,9 @@ public class UserController {
                 body.put("label", serverName);
                 body.put("to", "server_info?user_name=" + user_name +
                         "&server_name=" + serverName);
-                bodies.add(body);
+                servers.add(body);
             }
-            retBody.addData("servers", bodies);
+            retBody.addData("servers", servers);
         } catch (CannotBeNullException e) {
             e.printStackTrace();
             return new RetBody(e.toString());
@@ -655,18 +676,18 @@ public class UserController {
             return new RetBody("User is not logged in!");
         }
         RetBody retBody = new RetBody("Successful!");
-        List<HashMap<String, String>> bodies = new ArrayList<>();
+        List<HashMap<String, String>> users = new ArrayList<>();
         try {
-            List<User> users = login.searchUser(keyword);
-            for (User user : users) {
+            List<User> userObjects = login.searchUser(keyword);
+            for (User user : userObjects) {
                 String other_user_name = user.getName();
                 HashMap<String, String> body = new HashMap<>();
                 body.put("label", other_user_name);
                 body.put("to", "other_user_info?user_name=" + user_name +
                         "&other_user_name=" + other_user_name);
-                bodies.add(body);
+                users.add(body);
             }
-            retBody.addData("users", bodies);
+            retBody.addData("users", users);
         } catch (CannotBeNullException e) {
             e.printStackTrace();
             return new RetBody(e.toString());
@@ -760,7 +781,7 @@ public class UserController {
         Group group = si.getUserGroup(login.self());
         RetBody retBody = new RetBody("Successful!");
         retBody.addData("ismember", login.getJoinedServers().contains(server));
-        retBody.addData("isbanned", /*TODO*/);
+        retBody.addData("isbanned", si.checkIfBanned());
         retBody.addData("isowner", server.getCreator() == login.self().getId());
         retBody.addData("canStats", group.isCanStats());
         retBody.addData("canCreate", group.isCanCreate());
@@ -825,7 +846,7 @@ public class UserController {
         User other_user = otherUsers.get(0);
         RetBody retBody = new RetBody("Successful!");
         retBody.addData("isfriend", login.getFriends().contains(other_user));
-        retBody.addData("blocked", /*TODO*/);
+        retBody.addData("blocked", login.checkIfBlocked(other_user));
         retBody.addData("blocking", login.getBlockedUsers().contains(other_user));
         return retBody;
     }
@@ -874,5 +895,163 @@ public class UserController {
             return new RetBody("Failed: " + e);
         }
         return new RetBody("Successful!");
+    }
+
+    @RequestMapping("/servers/status")
+    public Object getServerStatus(@RequestParam String user_name, @RequestParam String server_name) {
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        ServerInteract si = login.enterServer(server);
+        try {
+            ServerStat serverStat = si.getServerStat();
+            retBody.addData("messageCnt", serverStat.getMessageCnt());
+            retBody.addData("totalLength", serverStat.getTotalLength());
+            retBody.addData("callCnt", serverStat.getCallCnt());
+            retBody.addData("totalTime", serverStat.getTotalTime());
+        } catch (NoPermissionException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
+    }
+
+    @RequestMapping("/servers/create_category")
+    public Object createCategory(@RequestParam String user_name, @RequestParam String server_name,
+                                 @RequestBody Map<String, Object> map) {
+        String category_name = (String) map.get("category_name");
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        ServerInteract si = login.enterServer(server);
+        try {
+            si.createCategory(category_name);
+        } catch (NoPermissionException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        } catch (DuplicateNameException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
+    }
+
+    @RequestMapping("/servers/create_channel")
+    public Object createChannel(@RequestParam String user_name, @RequestParam String server_name,
+                                @RequestParam String category_name, @RequestBody Map<String, Object> map) {
+        String channel_name = (String) map.get("channel_name");
+        int channel_type = (int) map.get("channel_type");
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        ServerInteract si = login.enterServer(server);
+        Category category = null;
+        for (Category temp : si.getCategories()) {
+            if (temp.getName().equals(category_name)) {
+                category = temp;
+                break;
+            }
+        }
+        if (category == null) {
+            return new RetBody("Category not found!");
+        }
+        try {
+            si.createChannel(category, channel_name, channel_type == 2);
+        } catch (NoPermissionException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        } catch (DuplicateNameException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
+    }
+
+    @RequestMapping("/servers/create_group")
+    public Object createGroup(/*@RequestParam String user_name, @RequestParam String server_name,
+                              @RequestBody Map<String, Object> map*/) {
+        return new RetBody("该功能尚未开发，请以后再来探索吧！");
+    }
+
+    @RequestMapping("/servers/other_user_group")
+    public Object getOtherUserGroup(@RequestParam String user_name, @RequestParam String server_name,
+                                     @RequestParam String other_user_name) {
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        ServerInteract si = login.enterServer(server);
+        List<HashMap<String, String>> options = new ArrayList<>();
+        for (Group group : si.getGroups()) {
+            String groupName = group.getName();
+            HashMap<String, String> body = new HashMap<>();
+            body.put("label", groupName);
+            body.put("value", groupName);
+            options.add(body);
+        }
+        retBody.addData("options", options);
+        List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
+        if (otherUsers.size() == 0) {
+            return new RetBody("Other_user not found!");
+        }
+        User other_user = otherUsers.get(0);
+        retBody.addData("value", si.getUserGroup(other_user));
+        return retBody;
+    }
+
+    @RequestMapping("/servers/other_user_group_change")
+    public Object changeOtherUserGroup(@RequestParam String user_name, @RequestParam String server_name,
+                                       @RequestParam String other_user_name, @RequestBody Map<String, Object> map) {
+        String group_name = (String) map.get("group_name");
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        ServerInteract si = login.enterServer(server);
+        Member member = null;
+        for (Member temp : si.getMembers()) {
+            if (temp.getName().equals(other_user_name)) {
+                member = temp;
+                break;
+            }
+        }
+        if (member == null) {
+            return new RetBody("Other user is not in this server!");
+        }
+        Group group = null;
+        for (Group temp : si.getGroups()) {
+            if (temp.getName().equals(group_name)) {
+                group = temp;
+                break;
+            }
+        }
+        if (group == null) {
+            return new RetBody("Group not found!");
+        }
+        try {
+            si.ManageMember(member, group);
+        } catch (NoPermissionException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
     }
 }
