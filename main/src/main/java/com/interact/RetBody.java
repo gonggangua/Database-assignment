@@ -14,6 +14,10 @@ public class RetBody {
         data = new HashMap<>();
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public void addData(String key, Object value) {
         data.put(key, value);
     }

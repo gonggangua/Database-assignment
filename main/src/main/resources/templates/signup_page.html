@@ -41,6 +41,7 @@
   "body": [
     {
       "type": "service",
+      "id": "u:167dc13b0e32",
       "body": [
         {
           "type": "form",
@@ -58,9 +59,9 @@
               }
             },
             {
-              "label": "邮箱",
-              "type": "input-email",
               "name": "mail",
+              "type": "input-email",
+              "label": "邮箱",
               "id": "u:460bb6805542",
               "required": true
             },
@@ -83,7 +84,14 @@
           ],
           "api": {
             "url": "user/signup",
-            "method": "post"
+            "method": "post",
+            "messages": {
+              "fetchFailed": "",
+              "saveSuccess": "",
+              "saveFailed": "",
+              "failed": "用户名已被占用",
+              "success": ""
+            }
           },
           "className": "p-10",
           "actions": [
@@ -95,7 +103,7 @@
                   "actions": [
                     {
                       "actionType": "toast",
-                      "expression": "${AND(${password}!=${confirm_password},!ISEMPTY(${user_name}),!ISEMPTY(${password}),!ISEMPTY(${confirm_password}),!${exist})}",
+                      "expression": "${AND(${password}!=${confirm_password},!ISEMPTY(${user_name}),!ISEMPTY(${password}),!ISEMPTY(${confirm_password}))}",
                       "args": {
                         "msgType": "error",
                         "position": "top-center",
@@ -105,57 +113,9 @@
                       }
                     },
                     {
-                      "args": {
-                        "msgType": "error",
-                        "position": "top-center",
-                        "closeButton": true,
-                        "showIcon": false,
-                        "msg": "该用户名已被使用"
-                      },
-                      "actionType": "toast",
-                      "expression": "${AND(!ISEMPTY(${user_name}),!ISEMPTY(${password}),!ISEMPTY(${confirm_password}),${exist})}"
-                    },
-                    {
                       "actionType": "submit",
-                      "expression": "${AND(${password}==${confirm_password},!ISEMPTY(${user_name}),!ISEMPTY(${password}),!${exist})}",
+                      "expression": "${AND(${password}==${confirm_password},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}",
                       "componentId": "u:dddca865fae4"
-                    },
-                    {
-                      "actionType": "dialog",
-                      "expression": "${AND(${password}==${confirm_password},!ISEMPTY(${user_name}),!ISEMPTY(${password}),!${exist})}",
-                      "dialog": {
-                        "type": "dialog",
-                        "title": "注册成功",
-                        "showCloseButton": true,
-                        "showErrorMsg": true,
-                        "showLoading": true,
-                        "id": "u:e0979ad8b992",
-                        "closeOnEsc": false,
-                        "dataMapSwitch": false,
-                        "actions": [
-                          {
-                            "type": "button",
-                            "id": "u:0a90c83715fc",
-                            "label": "返回登录页面",
-                            "onEvent": {
-                              "click": {
-                                "actions": [
-                                  {
-                                    "args": {
-                                      "blank": false,
-                                      "url": "login_page"
-                                    },
-                                    "actionType": "url"
-                                  }
-                                ]
-                              }
-                            },
-                            "level": "primary",
-                            "block": true,
-                            "className": "m-t-md"
-                          }
-                        ]
-                      }
                     }
                   ]
                 }
@@ -190,20 +150,47 @@
             }
           ],
           "panelClassName": "border-solid border-2 border-blue-500 rounded-xl shadow-lg",
-          "submitText": "注册",
           "onEvent": {
             "submitSucc": {
               "weight": 0,
               "actions": [
-              ]
-            },
-            "change": {
-              "weight": 0,
-              "actions": [
                 {
-                  "componentId": "u:167dc13b0e32",
-                  "actionType": "reload",
-                  "data": null
+                  "args": {
+                  },
+                  "dialog": {
+                    "type": "dialog",
+                    "title": "注册成功",
+                    "showCloseButton": true,
+                    "showErrorMsg": true,
+                    "showLoading": true,
+                    "id": "u:e0979ad8b992",
+                    "closeOnEsc": false,
+                    "dataMapSwitch": false,
+                    "actions": [
+                      {
+                        "type": "button",
+                        "id": "u:0a90c83715fc",
+                        "label": "返回登录页面",
+                        "onEvent": {
+                          "click": {
+                            "actions": [
+                              {
+                                "args": {
+                                  "blank": false,
+                                  "url": "login_page"
+                                },
+                                "actionType": "url"
+                              }
+                            ]
+                          }
+                        },
+                        "level": "primary",
+                        "block": true,
+                        "className": "m-t-md"
+                      }
+                    ]
+                  },
+                  "actionType": "dialog"
                 }
               ]
             }
@@ -212,13 +199,11 @@
             "fetchFailed": "",
             "saveSuccess": "",
             "saveFailed": ""
-          }
+          },
+          "submitText": "注册"
         }
       ],
-      "id": "u:167dc13b0e32",
-      "api": {
-        "url": "user/checkexist?user_name=${user_name}",
-        "method": "get"
+      "messages": {
       },
       "aside": [
         {
@@ -245,8 +230,6 @@
       },
       "className": "",
       "data": {
-      },
-      "messages": {
       }
     }
   ],

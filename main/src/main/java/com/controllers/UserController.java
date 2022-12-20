@@ -33,8 +33,7 @@ public class UserController {
             System.out.println("true");
             return retBody;
         } catch (LoginFailException e) {
-            e.printStackTrace();
-            RetBody retBody =  new RetBody("");
+            RetBody retBody = new RetBody("");
             retBody.addData("correct", false);
             System.out.println("false");
             return retBody;
@@ -59,7 +58,9 @@ public class UserController {
             return new RetBody("Login successful.");
         } catch (LoginFailException e) {
             e.printStackTrace();
-            return new RetBody("Login failed.");
+            RetBody retBody = new RetBody("Login failed.");
+            retBody.setStatus(1);
+            return retBody;
         }
     }
 
@@ -101,7 +102,9 @@ public class UserController {
             return new RetBody("Register successfully.");
         } catch (DuplicateNameException e) {
             e.printStackTrace();
-            return new RetBody("Your name has been used.\nTry another one.");
+            RetBody retBody = new RetBody("Your name has been used.\nTry another one.");
+            retBody.setStatus(1);
+            return retBody;
         }
     }
 
@@ -141,7 +144,7 @@ public class UserController {
             user.setName((String) map.get("user_name"));
         }
         if (map.containsKey("mail")) {
-            user.setName((String) map.get("mail"));
+            user.setMail((String) map.get("mail"));
         }
         if (map.containsKey("level")) {
             user.setLevel((int) map.get("level"));
@@ -184,6 +187,7 @@ public class UserController {
 
     @RequestMapping("/user/levelup")
     public Object levelUp(@RequestParam String user_name) {
+        System.out.println("in levelUp!");
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -795,6 +799,7 @@ public class UserController {
 
     @RequestMapping("/servers/create")
     public Object createServer(@RequestParam String user_name, @RequestBody Map<String, Object> map) {
+        System.out.println("in createServer!");
         String server_name = (String) map.get("server_name");
         //String owner_name = (String) map.get("owner_name");
         boolean isPrivate = (boolean) map.get("isPrivate");

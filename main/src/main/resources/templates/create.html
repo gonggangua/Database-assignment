@@ -73,11 +73,11 @@
               "options": [
                 {
                   "label": "是",
-                  "value": "A"
+                  "value": true
                 },
                 {
                   "label": "否",
-                  "value": "B"
+                  "value": false
                 }
               ],
               "id": "u:98824db8912e",
@@ -98,7 +98,7 @@
                   "actions": [
                     {
                       "actionType": "toast",
-                      "expression": "${AND(!ISEMPTY(${server_name}),!ISEMPTY(${isPrivate}),${exist})}",
+                      "expression": "${AND(!ISEMPTY(${server_name}),${exist})}",
                       "args": {
                         "msgType": "error",
                         "position": "top-center",
@@ -109,7 +109,7 @@
                     },
                     {
                       "actionType": "toast",
-                      "expression": "${AND(!ISEMPTY(${server_name}),!ISEMPTY(${isPrivate}),!${exist},${full})}",
+                      "expression": "${AND(!ISEMPTY(${server_name}),!${exist},${full})}",
                       "args": {
                         "msgType": "error",
                         "position": "top-center",
@@ -120,12 +120,12 @@
                     },
                     {
                       "actionType": "submit",
-                      "expression": "${AND(!ISEMPTY(${server_name}),!ISEMPTY(${isPrivate}),!${exist},!${full})}",
+                      "expression": "${AND(!ISEMPTY(${server_name}),!${exist},!${full})}",
                       "componentId": "u:dddca865fae4"
                     },
                     {
                       "actionType": "dialog",
-                      "expression": "${AND(!ISEMPTY(${server_name}),!ISEMPTY(${isPrivate}),!${exist},!${full})}",
+                      "expression": "${AND(!ISEMPTY(${server_name}),!${exist},!${full})}",
                       "dialog": {
                         "type": "dialog",
                         "title": "创建成功",

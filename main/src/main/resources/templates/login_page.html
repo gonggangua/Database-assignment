@@ -67,20 +67,14 @@
             }
           ],
           "api": {
-            "0": {
-              "url": "user/login",
-              "method": "post"
-            },
-            "1": {
-              "url": "/user/checkcorrect?user_name=${user_name}&password=${password}",
-              "method": "get"
-            },
             "url": "user/login",
             "method": "post",
             "messages": {
               "fetchFailed": "",
               "saveSuccess": "",
-              "saveFailed": ""
+              "saveFailed": "",
+              "failed": "用户名或密码错误",
+              "success": "登录成功"
             }
           },
           "className": "p-lg",
@@ -92,29 +86,8 @@
                 "click": {
                   "actions": [
                     {
-                      "actionType": "url",
-                      "expression": "${AND(${correct},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}",
-                      "args": {
-                        "url": "main_page?user_name=${user_name}",
-                        "blank": false
-                      }
-                    },
-                    {
-                      "args": {
-                        "msgType": "error",
-                        "position": "top-center",
-                        "closeButton": true,
-                        "showIcon": false,
-                        "msg": "用户名或密码不正确"
-                      },
-                      "actionType": "toast",
-                      "expression": "${AND(!${correct},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}"
-                    },
-                    {
-                      "args": {
-                      },
                       "actionType": "submit",
-                      "expression": "${AND(${correct},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}",
+                      "expression": "${AND(!ISEMPTY(${user_name}),!ISEMPTY(${password}))}",
                       "componentId": "u:3cabde3fb556"
                     }
                   ]
@@ -150,13 +123,15 @@
           ],
           "panelClassName": "border-solid border-2 border-blue-500 rounded-xl shadow-lg",
           "onEvent": {
-            "change": {
+            "submitSucc": {
               "weight": 0,
               "actions": [
                 {
-                  "componentId": "u:3cabde3fb556",
-                  "actionType": "reload",
-                  "data": null
+                  "args": {
+                    "blank": false,
+                    "url": "main_page?user_name=${user_name}"
+                  },
+                  "actionType": "url"
                 }
               ]
             }
@@ -165,15 +140,6 @@
             "fetchFailed": "",
             "saveSuccess": "",
             "saveFailed": ""
-          },
-          "initApi": {
-            "url": "/user/checkcorrect?user_name=${user_name}&password=${password}",
-            "method": "get",
-            "messages": {
-              "fetchFailed": "",
-              "saveSuccess": "",
-              "saveFailed": ""
-            }
           }
         }
       ],
