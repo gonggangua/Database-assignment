@@ -203,6 +203,49 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/friends/accept")
+    public Object acceptFriend(@RequestParam String user_name, @RequestParam String other_user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
+        if (otherUsers.size() == 0) {
+            return new RetBody("Request user not found!");
+        }
+        User otherUser = otherUsers.get(0);
+        try {
+            login.acceptFriend(otherUser);
+        } catch (DoNotExistException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        } catch (BlockedException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
+    }
+
+    @RequestMapping("/friends/reject")
+    public Object rejectFriend(@RequestParam String user_name, @RequestParam String other_user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
+        if (otherUsers.size() == 0) {
+            return new RetBody("Request user not found!");
+        }
+        User otherUser = otherUsers.get(0);
+        try {
+            login.rejectFriend(otherUser);
+        } catch (DoNotExistException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
+    }
+
     @RequestMapping("/user/block")
     public Object block(@RequestParam String user_name, @RequestParam String other_user_name) {
         try {
@@ -272,6 +315,12 @@ public class UserController {
         for (User friend : login.getFriends()) {
             FriendBody friendBody = new FriendBody(friend.getName());
             friendBodies.add(friendBody);
+        }
+        List<FriendBody> newFriendApps = new ArrayList<>();
+        retBody.addData("new_friend_applications", newFriendApps);
+        for (User friendRequest : login.getRequests()) {
+            FriendBody friendBody = new FriendBody(friendRequest.getName());
+            newFriendApps.add(friendBody);
         }
         return retBody;
     }
