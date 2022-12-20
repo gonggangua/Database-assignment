@@ -8,9 +8,14 @@
         value (#{sid}, #{uid})
     </insert>
 
+    <select id="select" parameterType="ServerBlacklist" resultType="ServerBlacklist">
+        select * from serverBlacklists
+        where sid = #{sid} and uid = #{uid}
+    </select>
+
     <delete id="delete" parameterType="ServerBlacklist" flushCache="true">
         delete from serverBlacklists
-        where sid = #{sid} and uid = {#uid}
+        where sid = #{sid} and uid = #{uid}
     </delete>
 
     <select id="selectByIds" parameterType="map" resultType="ServerBlacklist">
