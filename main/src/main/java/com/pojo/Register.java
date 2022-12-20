@@ -40,6 +40,7 @@ public class Register {
             user = userMapper.selectByAccurateName(name).get(0);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
+                e.printStackTrace();
                 throw new DuplicateNameException(name);
             }
         }
