@@ -5,7 +5,6 @@ import com.dao.GroupMapper;
 import com.dao.JoiningServerMapper;
 import com.dao.LoginMapper;
 import com.dao.PrivateMessageMapper;
-import com.dao.ServerBlacklistMapper;
 import com.dao.ServerMapper;
 import com.dao.UserBlacklistMapper;
 import com.dao.UserMapper;
@@ -115,7 +114,7 @@ public class Login {
     }
 
     //用户名精确检索
-    public List<User> searchAccurateName(String name) {
+    public List<User> searchUserByAccurateName(String name) {
         SqlSession sqlSession = null;
         try {
             sqlSession = getSqlSession();
@@ -124,7 +123,7 @@ public class Login {
         }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         List<User> users = null;
-        users = mapper.selectByAccurateName(name);
+        users = mapper.selectUserByAccurateName(name);
         sqlSession.close();
         return users;
     }
@@ -238,6 +237,20 @@ public class Login {
 
         root.commit();
         root.close();
+    }
+
+    //服务器名精准搜索服务器
+    public List<Server> searchServerByAccurateName(String name) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = getSqlSession();
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+        }
+        LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
+        List<Server> servers = mapper.selectServerByAccurateName(name);
+        sqlSession.close();
+        return servers;
     }
 
     //id搜索服务器

@@ -128,7 +128,7 @@ public class UserController {
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<User> users = login.searchAccurateName(other_user_name);
+        List<User> users = login.searchUserByAccurateName(other_user_name);
         if (users.size() == 0) {
             return new RetBody("Cannot find user!");
         }
@@ -170,7 +170,7 @@ public class UserController {
             if (login == null) {
                 return new RetBody("User is not logged in!");
             }
-            List<User> otherUsers = login.searchAccurateName(other_user_name);
+            List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
             if (otherUsers.size() == 0) {
                 return new RetBody("Request user not found!");
             }
@@ -193,7 +193,7 @@ public class UserController {
             if (login == null) {
                 return new RetBody("User is not logged in!");
             }
-            List<User> otherUsers = login.searchAccurateName(other_user_name);
+            List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
             if (otherUsers.size() == 0) {
                 return new RetBody("Request user not found!");
             }
@@ -343,7 +343,7 @@ public class UserController {
         }
         try {
             ServerInteract si = login.enterServer(server);
-            List<User> others = login.searchAccurateName(other_user_name);
+            List<User> others = login.searchUserByAccurateName(other_user_name);
             if (others.size() == 0) {
                 return new RetBody("Invalid other_user_name!");
             }
