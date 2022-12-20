@@ -29,7 +29,7 @@ public class LoginTest {
     @Test
     public void loginfail() {
         try {
-            Login testLogin = new Login("zhangsan", "233333");
+            Login testLogin = new Login("zhangsan", "2331");
         } catch (LoginFailException e) {
             e.printStackTrace();
             System.out.println("111");
