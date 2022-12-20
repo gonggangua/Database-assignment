@@ -12,13 +12,15 @@ public interface LoginMapper {
 
     List<User> selectUserByName(String name);
 
-    List<User> selectByAccurateName(String name);
+    List<User> selectUserByAccurateName(String name);
 
     List<User> selectSelf(String name);
 
     List<Server> selectServerById(int id);
 
     List<Server> selectServerByName(String name);
+
+    List<Server> selectServerByAccurateName(String name);
 
     List<Server> getJoinedServers(int id);
 

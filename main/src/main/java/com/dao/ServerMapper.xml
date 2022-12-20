@@ -27,6 +27,11 @@
         where `name` like '%${name}%'
     </select>
 
+    <select id="selectByAccurateName" parameterType="String" resultType="Server">
+        select * from servers
+        where `name` = #{name}
+    </select>
+
     <update id="createServerMembers" parameterType="Server" flushCache="true">
         create view `members_${id}` as
         select `userBasicInfo`.*, joiningServer.gname, joiningServer.time from joiningServer, `userBasicInfo`

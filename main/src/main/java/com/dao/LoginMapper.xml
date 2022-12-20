@@ -17,7 +17,7 @@
         where `name` like '%${name}%'
     </select>
 
-    <select id="selectByAccurateName" parameterType="String" resultType="User">
+    <select id="selectUserByAccurateName" parameterType="String" resultType="User">
         select * from userBasicInfo
         where `name` = #{name}
     </select>
@@ -29,6 +29,11 @@
     <select id="selectServerByName" parameterType="String" resultType="Server">
         select * from publicServer
         where `name` like '%${name}%'
+    </select>
+
+    <select id="selectServerByAccurateName" parameterType="String" resultType="Server">
+        select * from publicServer
+        where `name` = #{name}
     </select>
 
     <select id="selectServerById" parameterType="int" resultType="Server">
