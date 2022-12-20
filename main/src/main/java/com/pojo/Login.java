@@ -446,7 +446,7 @@ public class Login {
     }
 
     //检查本人是否被某用户屏蔽
-    public boolean checkIfBanned(User user) {
+    public boolean checkIfBlocked(User user) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
         UserBlacklist blacklist = new UserBlacklist(cur.getId(), user.getId());
