@@ -61,6 +61,18 @@ public class ServerInteract {
         return ret;
     }
 
+    //获取某人在当前服务器的用户组
+    public Group getUserGroup(User user) {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("uid", user.getId());
+        map.put("sid", server.getId());
+        GroupMapper groupMapper = root.getMapper(GroupMapper.class);
+        Group group = groupMapper.getUserGroup(map).get(0);
+        root.close();
+        return group;
+    }
+
     //获取某人在某服务器所属用户组
     private Group getGroup(User user, Server server, SqlSession root) {
         HashMap<String, Object> map = new HashMap<>();
