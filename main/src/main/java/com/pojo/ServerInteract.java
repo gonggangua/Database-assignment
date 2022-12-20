@@ -73,6 +73,7 @@ public class ServerInteract {
         return group;
     }
 
+    //检查本人是否被服务器拉黑
     public boolean checkIfBanned() {
         SqlSession root = MybatisUtil.getRootSqlSession();
         ServerBlacklist blacklist = new ServerBlacklist(server.getId(), cur.getId());

@@ -445,6 +445,7 @@ public class Login {
         root.close();
     }
 
+    //检查本人是否被某用户屏蔽
     public boolean checkIfBanned(User user) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
