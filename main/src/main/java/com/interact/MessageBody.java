@@ -10,4 +10,9 @@ public class MessageBody {
         this.time = time;
         this.title = sender_name + " : " + content;
     }
+
+    public MessageBody(Timestamp time, String title) {
+        this.time = time;
+        this.title = title;
+    }
 }

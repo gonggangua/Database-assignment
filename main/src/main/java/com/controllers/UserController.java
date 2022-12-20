@@ -3,6 +3,7 @@ package com.controllers;
 import com.exceptions.*;
 import com.interact.*;
 import com.pojo.*;
+import com.pojo.types.UserStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +43,7 @@ public class UserController {
         try {
             Login login = new Login(username, password);
             loginHashMap.put(username, login);
+            login.setStatus(UserStatus.BUSY);
             return new RetBody("Login successful.");
         } catch (LoginFailException e) {
             e.printStackTrace();
@@ -356,7 +358,7 @@ public class UserController {
     }
 
     @RequestMapping("/servers/messages")
-    public Object getMessages(@RequestParam String user_name, @RequestParam String server_name,
+    public Object getChannelMessages(@RequestParam String user_name, @RequestParam String server_name,
                               @RequestParam String category_name, @RequestParam String channel_name) {
         Login login = getLogin(user_name);
         if (login == null) {
@@ -397,6 +399,14 @@ public class UserController {
         }
         List<MessageBody> messageBodies = new ArrayList<>();
         for (Message message : si.getMessages(channel)) {
+            if (!si.getNewMessages(channel).contains(message)) {
+                messageBodies.add(new MessageBody(message.getSendTime(),
+                        login.searchUser(message.getSender()).get(0).getName(),
+                        message.getContent()));
+            }
+        }
+        messageBodies.add(new MessageBody(null, "以下为新消息"));
+        for (Message message : si.getNewMessages(channel)) {
             messageBodies.add(new MessageBody(message.getSendTime(),
                     login.searchUser(message.getSender()).get(0).getName(),
                     message.getContent()));
@@ -406,7 +416,7 @@ public class UserController {
     }
 
     @RequestMapping("/servers/send_message")
-    public Object sendMessages(@RequestParam String user_name, @RequestParam String server_name,
+    public Object sendChannelMessages(@RequestParam String user_name, @RequestParam String server_name,
                               @RequestParam String category_name, @RequestParam String channel_name,
                                @RequestParam String content) {
         Login login = getLogin(user_name);
@@ -450,9 +460,8 @@ public class UserController {
         return retBody;
     }
 
-    @RequestMapping("/servers/join_call")
-    public Object joinCall(@RequestParam String user_name, @RequestParam String server_name,
-                               @RequestParam String category_name, @RequestParam String channel_name) {
+    private RetBody joinChannel(String user_name, String server_name,
+                               String category_name, String channel_name) {
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -496,9 +505,20 @@ public class UserController {
         return retBody;
     }
 
-    @RequestMapping("/servers/leave_call")
-    public Object leaveCall(@RequestParam String user_name, @RequestParam String server_name,
+    @RequestMapping("/servers/join_call")
+    public Object joinCall(@RequestParam String user_name, @RequestParam String server_name,
+                               @RequestParam String category_name, @RequestParam String channel_name) {
+        return joinChannel(user_name, server_name, category_name, channel_name);
+    }
+
+    @RequestMapping("/servers/join_channel")
+    public Object joinOtherChannel(@RequestParam String user_name, @RequestParam String server_name,
                            @RequestParam String category_name, @RequestParam String channel_name) {
+        return joinChannel(user_name, server_name, category_name, channel_name);
+    }
+
+    public RetBody leaveChannel(String user_name, String server_name,
+                                String category_name, String channel_name) {
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -541,5 +561,162 @@ public class UserController {
         si.leaveChannel(accessingChannel);
         //accessingChannelHashMap.remove(key);
         return retBody;
+    }
+
+    @RequestMapping("/servers/leave_call")
+    public Object leaveCall(@RequestParam String user_name, @RequestParam String server_name,
+                           @RequestParam String category_name, @RequestParam String channel_name) {
+        return leaveChannel(user_name, server_name, category_name, channel_name);
+    }
+
+    @RequestMapping("/servers/leave_channel")
+    public Object leaveOtherChannel(@RequestParam String user_name, @RequestParam String server_name,
+                            @RequestParam String category_name, @RequestParam String channel_name) {
+        return leaveChannel(user_name, server_name, category_name, channel_name);
+    }
+
+    @RequestMapping("/friends/messages")
+    public Object getFriendMessages(@RequestParam String user_name, @RequestParam String other_user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> friends = login.searchAccurateName(other_user_name);
+        if (friends.size() == 0) {
+            return new RetBody("Invalid other_user_name");
+        }
+        User friend = friends.get(0);
+        List<PrivateMessage> privateMessages = login.checkPrivateMessage(friend);
+        RetBody retBody = new RetBody("Successful!");
+        List<MessageBody> messageBodies = new ArrayList<>();
+        retBody.addData("items", messageBodies);
+        for (PrivateMessage privateMessage : privateMessages) {
+            messageBodies.add(new MessageBody(privateMessage.getSendTime(),
+                    login.searchUser(privateMessage.getSender()).get(0).getName(),
+                    privateMessage.getContent()));
+        }
+        return retBody;
+    }
+
+    @RequestMapping("/friends/send_message")
+    public Object sendFriendMessage(@RequestParam String user_name, @RequestParam String other_user_name, @RequestParam String content) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> friends = login.searchAccurateName(other_user_name);
+        if (friends.size() == 0) {
+            return new RetBody("Invalid other_user_name");
+        }
+        User friend = friends.get(0);
+        RetBody retBody = new RetBody("Successful!");
+        try {
+            login.sendPrivateMessage(friend, content);
+        } catch (BlockedException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
+    }
+
+    @RequestMapping("/servers/search")
+    public Object searchServers(@RequestParam String user_name, @RequestParam String keyword) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        RetBody retBody = new RetBody("Successful!");
+        try {
+            List<Server> servers = login.searchServer(keyword);
+            List<HashMap<String, String>> bodies = new ArrayList<>();
+            for (Server server : servers) {
+                if (server.isPrivate()) {
+                    continue;
+                }
+                String serverName = server.getName();
+                HashMap<String, String> body = new HashMap<>();
+                body.put("label", serverName);
+                body.put("to", "server_info?user_name=" + user_name +
+                        "&server_name=" + serverName);
+                bodies.add(body);
+            }
+            retBody.addData("servers", bodies);
+        } catch (CannotBeNullException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
+    }
+
+    @RequestMapping("/user/search")
+    public Object searchUser(@RequestParam String user_name, @RequestParam String keyword) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        RetBody retBody = new RetBody("Successful!");
+        List<HashMap<String, String>> bodies = new ArrayList<>();
+        try {
+            List<User> users = login.searchUser(keyword);
+            for (User user : users) {
+                String other_user_name = user.getName();
+                HashMap<String, String> body = new HashMap<>();
+                body.put("label", other_user_name);
+                body.put("to", "other_user_info?user_name=" + user_name +
+                        "&other_user_name=" + other_user_name);
+                bodies.add(body);
+            }
+            retBody.addData("users", bodies);
+        } catch (CannotBeNullException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return retBody;
+    }
+
+    public List<Object> findLoginAndServer(String user_name, String server_name) {
+        List<Object> res = new ArrayList<>();
+        Login login = getLogin(user_name);
+        if (login == null) {
+            res.add(new RetBody("User is not logged in!"));
+            return res;
+        }
+        res.add(login);
+        Server server = //TODO
+        if (server == null) {
+            res.add(new RetBody("Invalid server_name!"));
+            return res;
+        }
+        res.add(server);
+        res.add(new RetBody("Successful!"));
+        return res;
+    }
+
+    @RequestMapping("/servers/server_info")
+    public Object getServerInfo(@RequestParam String user_name, @RequestParam String server_name) {
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        //Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        retBody.addData("server_name", server.getName());
+        retBody.addData("isPrivate", server.isPrivate());
+        return retBody;
+    }
+
+    @RequestMapping("/servers/server_info_change")
+    public Object changeServerInfo(@RequestParam String user_name, @RequestParam String server_name,
+                                   @RequestBody Map<String, Object> map) {
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        ServerInteract si = login.enterServer(server);
+        si.//TODO
+        return (RetBody) objects.get(2);
     }
 }
