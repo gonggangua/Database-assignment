@@ -16,4 +16,9 @@ public class HelloController {
     public String signup() {
         return "signup_page.html";
     }
+
+    @RequestMapping("/login_page")
+    public String login() {
+        return "login_page.html";
+    }
 }

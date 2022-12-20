@@ -27,7 +27,7 @@
  
 <body>
     <div id="root" class="app-wrapper"></div>
-    <script src="./sdk/sdk.js"></script>
+    <script src="/amis/sdk.js"></script>
     <script type="text/javascript">
         (function () {
             let amis = amisRequire('amis/embed');
@@ -59,7 +59,7 @@
           ],
           "api": {
             "url": "servers/other_user_group_change?user_name=${user_name}&server_name=${server_name}&other_user_name=${other_user_name}",
-            "method": "get"
+            "method": "post"
           },
           "className": "p-10",
           "actions": [

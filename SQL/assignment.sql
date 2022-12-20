@@ -238,7 +238,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   CONSTRAINT `users_chk_1` CHECK (((`status` = _utf8mb4'offline') or (`status` = _utf8mb4'online') or (`status` = _utf8mb4'busy')))
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /* Trigger structure for table `accessingchannel` */
 
@@ -629,75 +629,6 @@ begin
 end */$$
 DELIMITER ;
 
-/*Table structure for table `blacklistview_2` */
-
-DROP TABLE IF EXISTS `blacklistview_2`;
-
-/*!50001 DROP VIEW IF EXISTS `blacklistview_2` */;
-/*!50001 DROP TABLE IF EXISTS `blacklistview_2` */;
-
-/*!50001 CREATE TABLE  `blacklistview_2`(
- `uid` int ,
- `blockid` int 
-)*/;
-
-/*Table structure for table `friendsstatus_2` */
-
-DROP TABLE IF EXISTS `friendsstatus_2`;
-
-/*!50001 DROP VIEW IF EXISTS `friendsstatus_2` */;
-/*!50001 DROP TABLE IF EXISTS `friendsstatus_2` */;
-
-/*!50001 CREATE TABLE  `friendsstatus_2`(
- `id` int ,
- `name` varchar(20) ,
- `mail` varchar(50) ,
- `level` int ,
- `status` varchar(20) ,
- `registry` datetime 
-)*/;
-
-/*Table structure for table `friendsview_2` */
-
-DROP TABLE IF EXISTS `friendsview_2`;
-
-/*!50001 DROP VIEW IF EXISTS `friendsview_2` */;
-/*!50001 DROP TABLE IF EXISTS `friendsview_2` */;
-
-/*!50001 CREATE TABLE  `friendsview_2`(
- `uid` int ,
- `target` int ,
- `status` tinyint(1) 
-)*/;
-
-/*Table structure for table `joinedservers_2` */
-
-DROP TABLE IF EXISTS `joinedservers_2`;
-
-/*!50001 DROP VIEW IF EXISTS `joinedservers_2` */;
-/*!50001 DROP TABLE IF EXISTS `joinedservers_2` */;
-
-/*!50001 CREATE TABLE  `joinedservers_2`(
- `id` int ,
- `name` varchar(50) ,
- `creator` int ,
- `isPrivate` tinyint(1) 
-)*/;
-
-/*Table structure for table `members_5` */
-
-DROP TABLE IF EXISTS `members_5`;
-
-/*!50001 DROP VIEW IF EXISTS `members_5` */;
-/*!50001 DROP TABLE IF EXISTS `members_5` */;
-
-/*!50001 CREATE TABLE  `members_5`(
- `id` int ,
- `name` varchar(20) ,
- `gname` varchar(50) ,
- `time` datetime 
-)*/;
-
 /*Table structure for table `publicserver` */
 
 DROP TABLE IF EXISTS `publicserver`;
@@ -709,23 +640,6 @@ DROP TABLE IF EXISTS `publicserver`;
  `id` int ,
  `name` varchar(50) ,
  `creator` int 
-)*/;
-
-/*Table structure for table `selfview_2` */
-
-DROP TABLE IF EXISTS `selfview_2`;
-
-/*!50001 DROP VIEW IF EXISTS `selfview_2` */;
-/*!50001 DROP TABLE IF EXISTS `selfview_2` */;
-
-/*!50001 CREATE TABLE  `selfview_2`(
- `id` int ,
- `name` varchar(20) ,
- `mail` varchar(50) ,
- `level` int ,
- `status` varchar(20) ,
- `registry` datetime ,
- `money` int 
 )*/;
 
 /*Table structure for table `userbasicinfo` */
@@ -740,54 +654,12 @@ DROP TABLE IF EXISTS `userbasicinfo`;
  `name` varchar(20) 
 )*/;
 
-/*View structure for view blacklistview_2 */
-
-/*!50001 DROP TABLE IF EXISTS `blacklistview_2` */;
-/*!50001 DROP VIEW IF EXISTS `blacklistview_2` */;
-
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `blacklistview_2` AS select `userblacklists`.`uid` AS `uid`,`userblacklists`.`blockid` AS `blockid` from `userblacklists` where (`userblacklists`.`uid` = 2) */;
-
-/*View structure for view friendsstatus_2 */
-
-/*!50001 DROP TABLE IF EXISTS `friendsstatus_2` */;
-/*!50001 DROP VIEW IF EXISTS `friendsstatus_2` */;
-
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `friendsstatus_2` AS select `users`.`id` AS `id`,`users`.`name` AS `name`,`users`.`mail` AS `mail`,`users`.`level` AS `level`,`users`.`status` AS `status`,`users`.`registry` AS `registry` from (`friends` join `users`) where ((`friends`.`uid` = 2) and (`friends`.`target` = `users`.`id`) and (`friends`.`status` = true)) */;
-
-/*View structure for view friendsview_2 */
-
-/*!50001 DROP TABLE IF EXISTS `friendsview_2` */;
-/*!50001 DROP VIEW IF EXISTS `friendsview_2` */;
-
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `friendsview_2` AS select `friends`.`uid` AS `uid`,`friends`.`target` AS `target`,`friends`.`status` AS `status` from `friends` where ((`friends`.`uid` = 2) or (`friends`.`target` = 2)) */;
-
-/*View structure for view joinedservers_2 */
-
-/*!50001 DROP TABLE IF EXISTS `joinedservers_2` */;
-/*!50001 DROP VIEW IF EXISTS `joinedservers_2` */;
-
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `joinedservers_2` AS select `servers`.`id` AS `id`,`servers`.`name` AS `name`,`servers`.`creator` AS `creator`,`servers`.`isPrivate` AS `isPrivate` from (`joiningserver` join `servers`) where ((`joiningserver`.`uid` = 2) and (`joiningserver`.`sid` = `servers`.`id`)) */;
-
-/*View structure for view members_5 */
-
-/*!50001 DROP TABLE IF EXISTS `members_5` */;
-/*!50001 DROP VIEW IF EXISTS `members_5` */;
-
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `members_5` AS select `userbasicinfo`.`id` AS `id`,`userbasicinfo`.`name` AS `name`,`joiningserver`.`gname` AS `gname`,`joiningserver`.`time` AS `time` from (`joiningserver` join `userbasicinfo`) where ((`joiningserver`.`sid` = 5) and (`joiningserver`.`uid` = `userbasicinfo`.`id`)) */;
-
 /*View structure for view publicserver */
 
 /*!50001 DROP TABLE IF EXISTS `publicserver` */;
 /*!50001 DROP VIEW IF EXISTS `publicserver` */;
 
 /*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `publicserver` AS select `servers`.`id` AS `id`,`servers`.`name` AS `name`,`servers`.`creator` AS `creator` from `servers` where (`servers`.`isPrivate` = false) */;
-
-/*View structure for view selfview_2 */
-
-/*!50001 DROP TABLE IF EXISTS `selfview_2` */;
-/*!50001 DROP VIEW IF EXISTS `selfview_2` */;
-
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `selfview_2` AS select `users`.`id` AS `id`,`users`.`name` AS `name`,`users`.`mail` AS `mail`,`users`.`level` AS `level`,`users`.`status` AS `status`,`users`.`registry` AS `registry`,`users`.`money` AS `money` from `users` where (`users`.`id` = 2) */;
 
 /*View structure for view userbasicinfo */
 
