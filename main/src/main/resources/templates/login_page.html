@@ -34,6 +34,10 @@
             // 通过替换下面这个配置来生成不同页面
             let amisJSON = {
   "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
   "body": [
     {
       "type": "service",
@@ -63,8 +67,21 @@
             }
           ],
           "api": {
+            "0": {
+              "url": "user/login",
+              "method": "post"
+            },
+            "1": {
+              "url": "/user/checkcorrect?user_name=${user_name}&password=${password}",
+              "method": "get"
+            },
             "url": "user/login",
-            "method": "post"
+            "method": "post",
+            "messages": {
+              "fetchFailed": "",
+              "saveSuccess": "",
+              "saveFailed": ""
+            }
           },
           "className": "p-lg",
           "actions": [
@@ -137,7 +154,7 @@
               "weight": 0,
               "actions": [
                 {
-                  "componentId": "u:11f93d78e886",
+                  "componentId": "u:3cabde3fb556",
                   "actionType": "reload",
                   "data": null
                 }
@@ -148,18 +165,26 @@
             "fetchFailed": "",
             "saveSuccess": "",
             "saveFailed": ""
+          },
+          "initApi": {
+            "url": "/user/checkcorrect?user_name=${user_name}&password=${password}",
+            "method": "get",
+            "messages": {
+              "fetchFailed": "",
+              "saveSuccess": "",
+              "saveFailed": ""
+            }
           }
         }
       ],
       "messages": {
-      },
-      "api": {
-        "url": "/user/checkcorrect?user_name=${user_name}&password=${password}",
-        "method": "get"
       }
     }
   ],
   "id": "u:167dc13b0e32",
+  "pullRefresh": {
+    "disabled": true
+  },
   "aside": [
     {
       "type": "divider",
@@ -170,14 +195,7 @@
       "id": "u:997e863e693e"
     }
   ],
-  "asideResizor": false,
-  "pullRefresh": {
-    "disabled": true
-  },
   "asideSticky": true,
-  "regions": [
-    "body"
-  ],
   "style": {
     "fontFamily": "",
     "fontSize": 12,

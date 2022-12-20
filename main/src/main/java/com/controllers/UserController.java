@@ -18,6 +18,8 @@ public class UserController {
 
     @RequestMapping("/user/checkcorrect")
     public Object loginCheck(@RequestParam String user_name, @RequestParam String password) {
+        System.out.println("in!");
+        System.out.println("user_name: " + user_name + "password: " + password);
         try {
             if (user_name == null || password == null ||
                 user_name.equals("") || password.equals("")) {
@@ -28,11 +30,13 @@ public class UserController {
             new Login(user_name, password);
             RetBody retBody = new RetBody("");
             retBody.addData("correct", true);
+            System.out.println("true");
             return retBody;
         } catch (LoginFailException e) {
             e.printStackTrace();
             RetBody retBody =  new RetBody("");
             retBody.addData("correct", false);
+            System.out.println("false");
             return retBody;
         }
     }
