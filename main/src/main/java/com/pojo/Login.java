@@ -445,6 +445,24 @@ public class Login {
         root.close();
     }
 
+    //检查本人是否被某用户屏蔽
+    public boolean checkIfBanned(User user) {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+
+        UserBlacklist blacklist = new UserBlacklist(cur.getId(), user.getId());
+        UserBlacklistMapper mapper = root.getMapper(UserBlacklistMapper.class);
+
+        boolean ret;
+        if (!mapper.select(blacklist).isEmpty()) {
+            ret = true;
+        } else {
+            ret = false;
+        }
+
+        root.close();
+        return ret;
+    }
+
     //拉黑用户
     public void blockUser(User user) throws AlreadyExistException {
         SqlSession root = MybatisUtil.getRootSqlSession();

@@ -73,6 +73,22 @@ public class ServerInteract {
         return group;
     }
 
+    //检查本人是否被服务器拉黑
+    public boolean checkIfBanned() {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        ServerBlacklist blacklist = new ServerBlacklist(server.getId(), cur.getId());
+
+        ServerBlacklistMapper mapper = root.getMapper(ServerBlacklistMapper.class);
+
+        boolean ret;
+        if (!mapper.select(blacklist).isEmpty()) {
+            ret = true;
+        } else {
+            ret = false;
+        }
+        return ret;
+    }
+
     //获取某人在某服务器所属用户组
     private Group getGroup(User user, Server server, SqlSession root) {
         HashMap<String, Object> map = new HashMap<>();
