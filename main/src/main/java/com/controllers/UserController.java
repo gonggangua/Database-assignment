@@ -747,7 +747,25 @@ public class UserController {
 
     @RequestMapping("/servers/checkuser")
     public Object checkUserAndServer(@RequestParam String user_name, @RequestParam String server_name) {
-
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<Server> servers = login.searchServerByAccurateName(server_name);
+        if (servers.size() == 0) {
+            return new RetBody("Server not found!");
+        }
+        Server server = servers.get(0);
+        ServerInteract si = login.enterServer(server);
+        Group group = si.getUserGroup(login.self());
+        RetBody retBody = new RetBody("Successful!");
+        retBody.addData("ismember", login.getJoinedServers().contains(server));
+        retBody.addData("isbanned", /*TODO*/);
+        retBody.addData("isowner", server.getCreator() == login.self().getId());
+        retBody.addData("canStats", group.isCanStats());
+        retBody.addData("canCreate", group.isCanCreate());
+        retBody.addData("canManage", group.isCanManage());
+        return retBody;
     }
 
     @RequestMapping("/servers/join")
@@ -790,6 +808,70 @@ public class UserController {
         } catch (NoPermissionException e) {
             e.printStackTrace();
             return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
+    }
+
+    @RequestMapping("/friends/checkrelationship")
+    public Object getUserRelationship(@RequestParam String user_name, @RequestParam String other_user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
+        if (otherUsers.size() == 0) {
+            return new RetBody("Other_user not found!");
+        }
+        User other_user = otherUsers.get(0);
+        RetBody retBody = new RetBody("Successful!");
+        retBody.addData("isfriend", login.getFriends().contains(other_user));
+        retBody.addData("blocked", /*TODO*/);
+        retBody.addData("blocking", login.getBlockedUsers().contains(other_user));
+        return retBody;
+    }
+
+    @RequestMapping("/friends/delete")
+    public Object deleteFriend(@RequestParam String user_name, @RequestParam String other_user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
+        if (otherUsers.size() == 0) {
+            return new RetBody("Other_user not found!");
+        }
+        User other_user = otherUsers.get(0);
+        try {
+            login.blockUser(other_user);
+        } catch (AlreadyExistException e) {
+            e.printStackTrace();
+            return new RetBody("He/She is blocked by you");
+        }
+        try {
+            login.removeBlock(other_user);
+        } catch (DoNotExistException e) {
+            e.printStackTrace();
+            return new RetBody(e.toString());
+        }
+        return new RetBody("Successful!");
+    }
+
+    @RequestMapping("/friends/unblock")
+    public Object removeBlock(@RequestParam String user_name, @RequestParam String other_user_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<User> otherUsers = login.searchUserByAccurateName(other_user_name);
+        if (otherUsers.size() == 0) {
+            return new RetBody("Other_user not found!");
+        }
+        User other_user = otherUsers.get(0);
+        try {
+            login.removeBlock(other_user);
+        } catch (DoNotExistException e) {
+            e.printStackTrace();
+            return new RetBody("Failed: " + e);
         }
         return new RetBody("Successful!");
     }
