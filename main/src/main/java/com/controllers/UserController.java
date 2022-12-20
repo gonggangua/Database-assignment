@@ -19,8 +19,9 @@ public class UserController {
     @RequestMapping("/user/checkcorrect")
     public Object loginCheck(@RequestParam String user_name, @RequestParam String password) {
         try {
-            if (user_name == null || password == null) {
-                RetBody retBody =  new RetBody("information missing!");
+            if (user_name == null || password == null ||
+                user_name.equals("") || password.equals("")) {
+                RetBody retBody =  new RetBody("Information missing!");
                 retBody.addData("correct", false);
                 return retBody;
             }
@@ -38,8 +39,15 @@ public class UserController {
 
     @RequestMapping("/user/login")
     public Object login(@RequestBody Map<String, Object> map) {
+        if (map == null) {
+            return new RetBody("");
+        }
         String username = (String) map.get("user_name");
         String password = (String) map.get("password");
+        if (username == null || username.equals("") ||
+            password == null || password.equals("")) {
+            return new RetBody("Please input your information");
+        }
         try {
             Login login = new Login(username, password);
             loginHashMap.put(username, login);
@@ -64,6 +72,11 @@ public class UserController {
 
     @RequestMapping("/user/checkexist")
     public Object registerCheck(@RequestParam String user_name) {
+        if (user_name == null || user_name.equals("")) {
+            RetBody retBody = new RetBody("Please input your name");
+            retBody.addData("exist", false);
+            return retBody;
+        }
         try {
             Register.checkName(user_name);
             RetBody retBody = new RetBody("");
