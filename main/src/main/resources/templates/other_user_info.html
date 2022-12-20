@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>用户信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
+  "body": [
+    {
+      "type": "form",
+      "id": "u:2bec2f90e35d",
+      "body": [
+        {
+          "type": "input-text",
+          "id": "u:0ac0a678dd54",
+          "label": "用户名",
+          "name": "other_user_name",
+          "value": ""
+        },
+        {
+          "type": "input-email",
+          "name": "mail",
+          "label": "邮箱",
+          "id": "u:35dc0e0684a7",
+          "value": ""
+        },
+        {
+          "label": "等级",
+          "type": "input-number",
+          "name": "level",
+          "value": "",
+          "id": "u:49d22bde0e69",
+          "keyboard": false,
+          "disabled": "true"
+        },
+        {
+          "type": "input-text",
+          "label": "状态",
+          "name": "status",
+          "value": "",
+          "id": "u:49d22bde0e69",
+          "keyboard": false,
+          "disabled": "true",
+          "step": 1
+        },
+        {
+          "type": "input-text",
+          "label": "注册时间",
+          "name": "registry",
+          "value": "",
+          "id": "u:beb451813dcf",
+          "keyboard": false,
+          "disabled": "true",
+          "step": 1
+        }
+      ],
+      "title": "用户信息",
+      "actions": [
+      ],
+      "initApi": "user/other_info?user_name=${user_name}&other_user_name=${other_user_name}",
+      "disabled": true,
+      "api": {
+        "url": "",
+        "method": "get"
+      }
+    },
+    {
+      "type": "button-toolbar",
+      "name": "button-toolbar",
+      "id": "u:828dfa5cd828",
+      "actions": [
+      ],
+      "buttons": [
+        {
+          "type": "button",
+          "label": "发送好友申请",
+          "level": "success",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "user/friend_request?user_name=${user_name}&other_user_name=${other_user_name}",
+                      "method": "post",
+                      "messages": {
+                        "success": "好友请求发送成功"
+                      },
+                      "dataType": "json"
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                }
+              ]
+            }
+          },
+          "id": "u:662531460b82",
+          "size": "lg",
+          "className": "m-r-lg",
+          "visibleOn": "${!isfriend}",
+          "disabledOn": "${OR(${blocked},${blocking})}"
+        },
+        {
+          "type": "button",
+          "label": "管理用户所在的用户组",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "blank": false,
+                    "url": "user_group?user_name=${user_name}&server_name=${server_name}&other_user_name=${other_user_name}"
+                  },
+                  "actionType": "url"
+                }
+              ]
+            }
+          },
+          "id": "u:3522e2206632",
+          "level": "primary",
+          "block": false,
+          "size": "lg",
+          "className": "m-r-lg",
+          "visibleOn": "${canManage}"
+        },
+        {
+          "type": "button",
+          "label": "删除好友",
+          "id": "u:f7f56ad60fa2",
+          "level": "danger",
+          "size": "lg",
+          "className": "m-r-lg",
+          "confirmText": "确定要删除该好友吗？",
+          "visibleOn": "${isfriend}",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "friends/delete?user_name=${user_name}&other_user_name=${other_user_name}",
+                      "method": "delete",
+                      "messages": {
+                        "success": "已删除"
+                      }
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "goBack"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        },
+        {
+          "type": "button",
+          "label": "加入黑名单",
+          "level": "danger",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "user/block?user_name=${user_name}&other_user_name=${other_user_name}",
+                      "method": "post",
+                      "messages": {
+                        "success": "已加入黑名单"
+                      },
+                      "dataType": "json"
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "refresh"
+                }
+              ]
+            }
+          },
+          "id": "u:faadca012501",
+          "size": "lg",
+          "className": "m-r-lg",
+          "confirmText": "确认要将该用户加入黑名单吗？",
+          "visibleOn": "${!blocking}"
+        },
+        {
+          "type": "button",
+          "label": "从黑名单中移除",
+          "id": "u:17ebe6cf8479",
+          "size": "lg",
+          "className": "m-r-lg",
+          "level": "danger",
+          "visibleOn": "${blocking}",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "friends/unblock?user_name=${user_name}&other_user_name=${other_user_name}",
+                      "method": "delete",
+                      "messages": {
+                        "success": "已从黑名单移除"
+                      }
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "refresh"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        },
+        {
+          "type": "button",
+          "label": "从服务器驱逐并封禁",
+          "id": "u:78d2c352fae7",
+          "size": "lg",
+          "level": "danger",
+          "confirmText": "确认要将该用户从服务器驱逐并封禁吗？",
+          "visibleOn": "${canBan}",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "servers/ban?user_name=${user_name}&server_name=${server_name}&other_user_name=${other_user_name}",
+                      "method": "post",
+                      "messages": {
+                        "success": "封禁成功"
+                      },
+                      "dataType": "json"
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "goBack"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "id": "u:e9db51a5c817",
+  "pullRefresh": {
+    "disabled": true
+  },
+  "api": [
+    "servers/checkuser?user_name=${user_name}&server_name=${server_name}",
+    "friends/checkrelationship?user_name=${user_name}&other_user_name=${other_user_name}"
+  ],
+  "data": {
+    "isStatic": true
+  }
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>

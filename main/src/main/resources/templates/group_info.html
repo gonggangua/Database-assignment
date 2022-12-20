@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>用户组信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
+  "body": [
+    {
+      "type": "form",
+      "id": "u:2bec2f90e35d",
+      "body": [
+        {
+          "label": "名称",
+          "type": "input-text",
+          "name": "group_name",
+          "value": "",
+          "id": "u:0ac0a678dd54"
+        },
+        {
+          "type": "radios",
+          "label": "能否创建子频道/分区",
+          "name": "canCreate",
+          "options": [
+            {
+              "label": "是",
+              "value": true
+            },
+            {
+              "label": "否",
+              "value": false
+            }
+          ],
+          "id": "u:f1163e45b5e4",
+          "required": true
+        },
+        {
+          "type": "radios",
+          "label": "能否封禁普通用户",
+          "name": "canBan",
+          "options": [
+            {
+              "label": "是",
+              "value": true
+            },
+            {
+              "label": "否",
+              "value": false
+            }
+          ],
+          "id": "u:c202dedfa643",
+          "required": true
+        },
+        {
+          "type": "radios",
+          "label": "能否管理用户组",
+          "name": "canManage",
+          "options": [
+            {
+              "label": "是",
+              "value": true
+            },
+            {
+              "label": "否",
+              "value": false
+            }
+          ],
+          "id": "u:368e2f6681e0",
+          "required": true
+        },
+        {
+          "type": "radios",
+          "label": "能否查看频道统计数据",
+          "name": "canStats",
+          "options": [
+            {
+              "label": "是",
+              "value": true
+            },
+            {
+              "label": "否",
+              "value": false
+            }
+          ],
+          "id": "u:e31f911f1717",
+          "required": true
+        }
+      ],
+      "title": "用户组信息",
+      "actions": [
+      ],
+      "initApi": "servers/group_info?user_name=${user_name}&server_name=${server_name}&group_name=${group_name}",
+      "disabled": true,
+      "api": {
+        "url": "servers/group_info_change?user_name=${user_name}&server_name=${server_name}&group_name=${group_name}",
+        "method": "get"
+      }
+    },
+    {
+      "type": "button-toolbar",
+      "buttons": [
+        {
+          "type": "button",
+          "label": "编辑",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "value": {
+                      "isStatic": false
+                    }
+                  },
+                  "actionType": "setValue",
+                  "componentId": "u:e9db51a5c817"
+                },
+                {
+                  "actionType": "enabled",
+                  "componentId": "u:2bec2f90e35d",
+                  "args": {
+                  }
+                }
+              ]
+            }
+          },
+          "id": "u:662531460b82",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": false
+        },
+        {
+          "type": "button",
+          "label": "确定",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "value": {
+                      "isStatic": true
+                    }
+                  },
+                  "actionType": "setValue",
+                  "componentId": "u:e9db51a5c817",
+                  "expression": ""
+                },
+                {
+                  "actionType": "disabled",
+                  "componentId": "u:2bec2f90e35d",
+                  "expression": ""
+                },
+                {
+                  "componentId": "u:2bec2f90e35d",
+                  "actionType": "submit",
+                  "expression": ""
+                }
+              ]
+            }
+          },
+          "id": "u:faadca012501",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": "${!isStatic}"
+        }
+      ],
+      "id": "u:828dfa5cd828",
+      "name": "button-toolbar",
+      "actions": [
+      ]
+    }
+  ],
+  "id": "u:e9db51a5c817",
+  "data": {
+    "isStatic": true
+  },
+  "pullRefresh": {
+    "disabled": true
+  },
+  "api": "servers/checkuser?user_name=${user_name}&server_name=${server_name}"
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>

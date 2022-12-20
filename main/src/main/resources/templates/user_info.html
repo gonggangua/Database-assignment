@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>个人资料</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
+  "body": [
+    {
+      "type": "form",
+      "id": "u:2bec2f90e35d",
+      "body": [
+        {
+          "label": "用户名",
+          "type": "input-text",
+          "name": "user_name",
+          "value": "",
+          "id": "u:0ac0a678dd54"
+        },
+        {
+          "type": "input-email",
+          "name": "mail",
+          "label": "邮箱",
+          "id": "u:35dc0e0684a7",
+          "value": ""
+        },
+        {
+          "label": "等级",
+          "type": "input-number",
+          "name": "level",
+          "value": "",
+          "id": "u:49d22bde0e69",
+          "keyboard": false,
+          "disabled": "true"
+        },
+        {
+          "type": "input-text",
+          "label": "注册时间",
+          "name": "registry",
+          "value": "",
+          "id": "u:beb451813dcf",
+          "keyboard": false,
+          "disabled": "true",
+          "step": 1
+        },
+        {
+          "type": "input-number",
+          "label": "余额",
+          "name": "money",
+          "value": "",
+          "id": "u:49d22bde0e69",
+          "keyboard": false,
+          "disabled": "true",
+          "step": 1
+        }
+      ],
+      "title": "个人资料",
+      "actions": [
+      ],
+      "initApi": "user/info?user_name=${user_name}",
+      "disabled": true,
+      "api": {
+        "url": "user/change?user_name=${user_name}",
+        "method": "get"
+      }
+    },
+    {
+      "type": "button-toolbar",
+      "buttons": [
+        {
+          "type": "button",
+          "label": "编辑",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "value": {
+                      "isStatic": false
+                    }
+                  },
+                  "actionType": "setValue",
+                  "componentId": "u:e9db51a5c817"
+                },
+                {
+                  "actionType": "enabled",
+                  "componentId": "u:2bec2f90e35d",
+                  "args": {
+                  }
+                }
+              ]
+            }
+          },
+          "id": "u:662531460b82",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": "${isStatic}"
+        },
+        {
+          "type": "button",
+          "label": "提交",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "value": {
+                      "isStatic": true
+                    }
+                  },
+                  "actionType": "setValue",
+                  "componentId": "u:e9db51a5c817",
+                  "expression": ""
+                },
+                {
+                  "actionType": "disabled",
+                  "componentId": "u:2bec2f90e35d",
+                  "expression": ""
+                },
+                {
+                  "componentId": "u:2bec2f90e35d",
+                  "actionType": "submit",
+                  "expression": ""
+                }
+              ]
+            }
+          },
+          "id": "u:faadca012501",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": "${!isStatic}"
+        },
+        {
+          "type": "button",
+          "label": "提升等级",
+          "id": "u:55ff4b4df12f",
+          "size": "lg",
+          "level": "warning",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "dialog": {
+                    "type": "dialog",
+                    "title": "提升等级",
+                    "body": [
+                      {
+                        "type": "button",
+                        "label": "花费300提升一级",
+                        "onEvent": {
+                          "click": {
+                            "actions": [
+                              {
+                                "args": {
+                                  "options": {
+                                    "silent": false
+                                  },
+                                  "api": {
+                                    "url": "user/levelup?user_name=${user_name}",
+                                    "method": "put",
+                                    "messages": {
+                                    },
+                                    "dataType": "json"
+                                  }
+                                },
+                                "outputVar": "responseResult",
+                                "actionType": "ajax",
+                                "expression": "${${money}>=300}"
+                              },
+                              {
+                                "actionType": "refresh",
+                                "expression": "${${money}>=300}"
+                              },
+                              {
+                                "args": {
+                                  "msgType": "warning",
+                                  "position": "top-center",
+                                  "closeButton": true,
+                                  "showIcon": true,
+                                  "msg": "余额不足"
+                                },
+                                "actionType": "toast",
+                                "expression": "${${money}<300}"
+                              }
+                            ]
+                          }
+                        },
+                        "id": "u:15a8ee08dce2",
+                        "block": true,
+                        "size": "lg",
+                        "level": "warning"
+                      }
+                    ],
+                    "showCloseButton": true,
+                    "showErrorMsg": true,
+                    "showLoading": true,
+                    "id": "u:4fd3d2c82ced",
+                    "actions": [
+                    ]
+                  },
+                  "actionType": "dialog"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        },
+        {
+          "type": "button",
+          "label": "充值",
+          "id": "u:872be1ba94dd",
+          "level": "success",
+          "size": "lg",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "dialog": {
+                    "type": "dialog",
+                    "title": "充值",
+                    "body": [
+                      {
+                        "type": "radios",
+                        "label": "金额",
+                        "name": "amount",
+                        "options": [
+                          {
+                            "label": "100",
+                            "value": "A"
+                          },
+                          {
+                            "label": "500",
+                            "value": "B"
+                          },
+                          {
+                            "label": "1000",
+                            "value": "1000"
+                          },
+                          {
+                            "label": "10000000000",
+                            "value": "10000000000"
+                          }
+                        ],
+                        "id": "u:fcddfb02a45f",
+                        "static": false,
+                        "required": true
+                      },
+                      {
+                        "type": "tpl",
+                        "tpl": "<p>扫描二维码支付</p>",
+                        "inline": false,
+                        "id": "u:888d9f42f931"
+                      },
+                      {
+                        "type": "qrcode",
+                        "value": "https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=a771751683f2af727606abc84c9f7535",
+                        "id": "u:f64a5d059443"
+                      }
+                    ],
+                    "showCloseButton": true,
+                    "showErrorMsg": true,
+                    "showLoading": true,
+                    "id": "u:33bd421fe8af",
+                    "closeOnEsc": false,
+                    "dataMapSwitch": false,
+                    "actions": [
+                      {
+                        "type": "button",
+                        "label": "确定",
+                        "onEvent": {
+                          "click": {
+                            "actions": [
+                              {
+                                "args": {
+                                  "options": {
+                                    "silent": false
+                                  },
+                                  "api": {
+                                    "url": "user/charge?user_name=${user_name}&amount=${amount}",
+                                    "method": "put",
+                                    "messages": {
+                                      "success": "充值成功"
+                                    },
+                                    "dataType": "json"
+                                  }
+                                },
+                                "actionType": "ajax",
+                                "outputVar": "responseResult"
+                              },
+                              {
+                                "args": {
+                                },
+                                "actionType": "refresh"
+                              }
+                            ]
+                          }
+                        },
+                        "id": "u:e43d4327eaeb",
+                        "close": true,
+                        "level": "success",
+                        "size": "lg"
+                      }
+                    ]
+                  },
+                  "actionType": "dialog"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        },
+        {
+          "type": "button",
+          "label": "退出登录",
+          "id": "u:d0f90dc02a50",
+          "size": "lg",
+          "level": "danger",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "user/logout?user_name=${user_name}",
+                      "method": "post",
+                      "messages": {
+                      }
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                    "blank": false,
+                    "url": "login_page"
+                  },
+                  "actionType": "url"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        }
+      ],
+      "id": "u:828dfa5cd828",
+      "name": "button-toolbar",
+      "actions": [
+      ]
+    }
+  ],
+  "id": "u:e9db51a5c817",
+  "pullRefresh": {
+    "disabled": true
+  },
+  "data": {
+    "isStatic": true
+  }
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>

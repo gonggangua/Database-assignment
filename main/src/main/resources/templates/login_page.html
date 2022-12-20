@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="login_page" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "body": [
+    {
+      "type": "service",
+      "id": "u:11f93d78e886",
+      "body": [
+        {
+          "type": "form",
+          "id": "u:3cabde3fb556",
+          "title": "登录",
+          "body": [
+            {
+              "label": "用户名",
+              "type": "input-text",
+              "name": "user_name",
+              "id": "u:73d200cd23f6"
+            },
+            {
+              "name": "password",
+              "type": "input-password",
+              "label": "密码",
+              "id": "u:d77cc017d7fa",
+              "showCounter": false,
+              "validations": {
+              },
+              "validationErrors": {
+              }
+            }
+          ],
+          "api": "user/login",
+          "className": "p-lg",
+          "actions": [
+            {
+              "type": "button",
+              "label": "登录",
+              "onEvent": {
+                "click": {
+                  "actions": [
+                    {
+                      "actionType": "url",
+                      "expression": "${AND(${correct},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}",
+                      "args": {
+                        "url": "main_page?user_name=${user_name}",
+                        "blank": false
+                      }
+                    },
+                    {
+                      "args": {
+                        "msgType": "error",
+                        "position": "top-center",
+                        "closeButton": true,
+                        "showIcon": false,
+                        "msg": "用户名或密码不正确"
+                      },
+                      "actionType": "toast",
+                      "expression": "${AND(!${correct},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}"
+                    },
+                    {
+                      "args": {
+                      },
+                      "actionType": "submit",
+                      "expression": "${AND(${correct},!ISEMPTY(${user_name}),!ISEMPTY(${password}))}",
+                      "componentId": "u:3cabde3fb556"
+                    }
+                  ]
+                }
+              },
+              "id": "u:016208629d86",
+              "size": "lg",
+              "className": "w-40",
+              "level": "info"
+            },
+            {
+              "type": "button",
+              "label": "没有账户？点此注册",
+              "onEvent": {
+                "click": {
+                  "actions": [
+                    {
+                      "args": {
+                        "url": "signup_page",
+                        "blank": false
+                      },
+                      "actionType": "url"
+                    }
+                  ]
+                }
+              },
+              "id": "u:153e6393afec",
+              "size": "lg",
+              "className": "w-40",
+              "block": false,
+              "level": "light"
+            }
+          ],
+          "panelClassName": "border-solid border-2 border-blue-500 rounded-xl shadow-lg",
+          "onEvent": {
+            "change": {
+              "weight": 0,
+              "actions": [
+                {
+                  "componentId": "u:11f93d78e886",
+                  "actionType": "reload",
+                  "data": null
+                }
+              ]
+            }
+          },
+          "messages": {
+            "fetchFailed": "",
+            "saveSuccess": "",
+            "saveFailed": ""
+          }
+        }
+      ],
+      "messages": {
+      },
+      "api": {
+        "url": "/user/checkcorrect?user_name=${user_name}&password=${password}",
+        "method": "get"
+      }
+    }
+  ],
+  "id": "u:167dc13b0e32",
+  "aside": [
+    {
+      "type": "divider",
+      "id": "u:2b7f8d583c4f"
+    },
+    {
+      "type": "divider",
+      "id": "u:997e863e693e"
+    }
+  ],
+  "asideResizor": false,
+  "pullRefresh": {
+    "disabled": true
+  },
+  "asideSticky": true,
+  "regions": [
+    "body"
+  ],
+  "style": {
+    "fontFamily": "",
+    "fontSize": 12,
+    "textAlign": "left"
+  },
+  "className": ""
+};
+            let amisScoped = amis.embed('#login_page', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>

@@ -9,6 +9,11 @@ public class HelloController {
 
     @RequestMapping("/")
     public String hello() {
-        return "database.html";
+        return "login_page.html";
+    }
+
+    @RequestMapping("/signup_page")
+    public String signup() {
+        return "signup_page.html";
     }
 }

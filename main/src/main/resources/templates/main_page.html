@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
+  "body": [
+    {
+      "type": "button",
+      "id": "u:f7c8386a53b4",
+      "label": "$user_name",
+      "onEvent": {
+        "click": {
+          "actions": [
+            {
+              "args": {
+                "url": "user_info?user_name=${user_name}",
+                "blank": false
+              },
+              "actionType": "url"
+            }
+          ]
+        }
+      },
+      "size": "lg",
+      "level": "enhance"
+    },
+    {
+      "type": "button-group",
+      "buttons": [
+        {
+          "type": "button",
+          "label": "搜索服务器/用户",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "blank": false,
+                    "url": "search?user_name=${user_name}"
+                  },
+                  "actionType": "url"
+                }
+              ]
+            }
+          },
+          "id": "u:aac7bde3f7e7",
+          "size": "lg",
+          "className": "w-80 m-r",
+          "block": false
+        },
+        {
+          "type": "button",
+          "label": "创建服务器",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "blank": false,
+                    "url": "create?user_name=${user_name}"
+                  },
+                  "actionType": "url"
+                }
+              ]
+            }
+          },
+          "id": "u:60c6b38b8bf5",
+          "size": "lg",
+          "block": false,
+          "className": "w-80"
+        }
+      ],
+      "id": "u:7b12bb4c9586",
+      "size": "lg",
+      "className": "ml-40 m-t-md",
+      "tiled": false,
+      "btnClassName": "",
+      "btnLevel": "enhance"
+    },
+    {
+      "type": "service",
+      "body": [
+        {
+          "type": "tabs",
+          "tabs": [
+            {
+              "title": "服务器",
+              "body": [
+                {
+                  "type": "tabs",
+                  "tabs": [
+                    {
+                      "title": "${server_name}",
+                      "id": "u:e930d2fe3589",
+                      "body": [
+                        {
+                          "type": "service",
+                          "body": [
+                            {
+                              "type": "grid",
+                              "id": "u:e4fcbf066f09",
+                              "className": "h-full",
+                              "columns": [
+                                {
+                                  "id": "u:18a691d1390b",
+                                  "md": 10,
+                                  "body": [
+                                    {
+                                      "type": "button",
+                                      "label": "创建分区",
+                                      "onEvent": {
+                                        "click": {
+                                          "actions": [
+                                            {
+                                              "args": {
+                                                "blank": false,
+                                                "url": "create_category?user_name=${user_name}&server_name=${server_name}"
+                                              },
+                                              "actionType": "url"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "id": "u:7bd10017354e",
+                                      "level": "primary",
+                                      "block": false,
+                                      "size": "lg",
+                                      "visibleOn": "${canCreate}"
+                                    },
+                                    {
+                                      "type": "tabs",
+                                      "id": "u:2cb6a950b474",
+                                      "tabs": [
+                                        {
+                                          "title": "${category_name}",
+                                          "body": [
+                                            {
+                                              "type": "button",
+                                              "label": "创建频道",
+                                              "onEvent": {
+                                                "click": {
+                                                  "actions": [
+                                                    {
+                                                      "args": {
+                                                        "blank": false,
+                                                        "url": "create_channel?user_name=${user_name}&server_name=${server_name}&category_name=${category_name}"
+                                                      },
+                                                      "actionType": "url"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "id": "u:07e124b6e9e3",
+                                              "level": "primary",
+                                              "block": false,
+                                              "size": "lg",
+                                              "visibleOn": "${canCreate}"
+                                            },
+                                            {
+                                              "type": "tabs",
+                                              "id": "u:7a088f5c4eb2",
+                                              "source": "${channels}",
+                                              "tabs": [
+                                                {
+                                                  "title": "${channel_name}",
+                                                  "body": [
+                                                    {
+                                                      "type": "button",
+                                                      "label": "频道语音",
+                                                      "onEvent": {
+                                                        "click": {
+                                                          "actions": [
+                                                            {
+                                                              "dialog": {
+                                                                "type": "dialog",
+                                                                "title": "",
+                                                                "body": [
+                                                                  {
+                                                                    "type": "form",
+                                                                    "id": "allFormSwitch",
+                                                                    "title": "",
+                                                                    "mode": "horizontal",
+                                                                    "labelWidth": 150,
+                                                                    "data": {
+                                                                      "isStatic": false
+                                                                    },
+                                                                    "body": [
+                                                                      {
+                                                                        "type": "button-toolbar",
+                                                                        "name": "button-toolbar",
+                                                                        "buttons": [
+                                                                          {
+                                                                            "type": "button",
+                                                                            "label": "加入语音",
+                                                                            "level": "primary",
+                                                                            "visibleOn": "${!isStatic}",
+                                                                            "onEvent": {
+                                                                              "click": {
+                                                                                "actions": [
+                                                                                  {
+                                                                                    "actionType": "setValue",
+                                                                                    "componentId": "allFormSwitch",
+                                                                                    "args": {
+                                                                                      "value": {
+                                                                                        "isStatic": true
+                                                                                      }
+                                                                                    }
+                                                                                  },
+                                                                                  {
+                                                                                    "args": {
+                                                                                      "options": {
+                                                                                        "silent": false
+                                                                                      },
+                                                                                      "api": {
+                                                                                        "url": "servers/join_channel?user_name={user_name}&server_name=${server_name}&category_name=${category_name}&channel_name=${channel_name}",
+                                                                                        "method": "post",
+                                                                                        "messages": {
+                                                                                        }
+                                                                                      }
+                                                                                    },
+                                                                                    "outputVar": "responseResult",
+                                                                                    "actionType": "ajax"
+                                                                                  }
+                                                                                ]
+                                                                              }
+                                                                            },
+                                                                            "id": "u:a73a04caf3ad",
+                                                                            "size": "lg",
+                                                                            "block": true
+                                                                          },
+                                                                          {
+                                                                            "type": "button",
+                                                                            "label": "退出语音",
+                                                                            "level": "primary",
+                                                                            "visibleOn": "${isStatic}",
+                                                                            "onEvent": {
+                                                                              "click": {
+                                                                                "actions": [
+                                                                                  {
+                                                                                    "actionType": "setValue",
+                                                                                    "componentId": "allFormSwitch",
+                                                                                    "args": {
+                                                                                      "value": {
+                                                                                        "isStatic": false
+                                                                                      }
+                                                                                    }
+                                                                                  },
+                                                                                  {
+                                                                                    "args": {
+                                                                                      "options": {
+                                                                                        "silent": false
+                                                                                      },
+                                                                                      "api": {
+                                                                                        "url": "servers/leave_channel?user_name={user_name}&server_name=${server_name}&category_name=${category_name}&channel_name=${channel_name}",
+                                                                                        "method": "post",
+                                                                                        "messages": {
+                                                                                        }
+                                                                                      }
+                                                                                    },
+                                                                                    "actionType": "ajax",
+                                                                                    "outputVar": "responseResult"
+                                                                                  }
+                                                                                ]
+                                                                              }
+                                                                            },
+                                                                            "id": "u:96ebdaba0273",
+                                                                            "size": "lg",
+                                                                            "block": true
+                                                                          }
+                                                                        ],
+                                                                        "id": "u:a08e6a955007"
+                                                                      }
+                                                                    ],
+                                                                    "actions": [
+                                                                    ],
+                                                                    "wrapWithPanel": false
+                                                                  }
+                                                                ],
+                                                                "showCloseButton": true,
+                                                                "showErrorMsg": true,
+                                                                "showLoading": true,
+                                                                "id": "u:983be10f953f"
+                                                              },
+                                                              "actionType": "dialog"
+                                                            }
+                                                          ]
+                                                        }
+                                                      },
+                                                      "id": "u:251c926bef1d",
+                                                      "size": "lg",
+                                                      "level": "primary",
+                                                      "block": true,
+                                                      "visibleOn": "${${channel_type}==2}"
+                                                    },
+                                                    {
+                                                      "type": "form",
+                                                      "id": "allFormSwitch1",
+                                                      "title": "",
+                                                      "mode": "normal",
+                                                      "labelWidth": 150,
+                                                      "data": {
+                                                        "isStatic": false
+                                                      },
+                                                      "body": [
+                                                        {
+                                                          "type": "button-toolbar",
+                                                          "name": "button-toolbar",
+                                                          "buttons": [
+                                                            {
+                                                              "type": "button",
+                                                              "label": "进入频道",
+                                                              "level": "primary",
+                                                              "visibleOn": "${AND(${!isStatic},${${channel_type}==1})}",
+                                                              "onEvent": {
+                                                                "click": {
+                                                                  "actions": [
+                                                                    {
+                                                                      "actionType": "setValue",
+                                                                      "componentId": "allFormSwitch1",
+                                                                      "args": {
+                                                                        "value": {
+                                                                          "isStatic": true
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    {
+                                                                      "args": {
+                                                                        "options": {
+                                                                          "silent": false
+                                                                        },
+                                                                        "api": {
+                                                                          "url": "servers/join_channel?user_name={user_name}&server_name=${server_name}&category_name=${category_name}&channel_name=${channel_name}",
+                                                                          "method": "post",
+                                                                          "messages": {
+                                                                          }
+                                                                        }
+                                                                      },
+                                                                      "outputVar": "responseResult",
+                                                                      "actionType": "ajax"
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              },
+                                                              "id": "u:a73a04caf3ad",
+                                                              "size": "lg",
+                                                              "block": true
+                                                            },
+                                                            {
+                                                              "type": "button",
+                                                              "label": "离开频道",
+                                                              "level": "primary",
+                                                              "visibleOn": "${isStatic}",
+                                                              "onEvent": {
+                                                                "click": {
+                                                                  "actions": [
+                                                                    {
+                                                                      "actionType": "setValue",
+                                                                      "componentId": "allFormSwitch1",
+                                                                      "args": {
+                                                                        "value": {
+                                                                          "isStatic": false
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    {
+                                                                      "args": {
+                                                                        "options": {
+                                                                          "silent": false
+                                                                        },
+                                                                        "api": {
+                                                                          "url": "servers/leave_channel?user_name={user_name}&server_name=${server_name}&category_name=${category_name}&channel_name=${channel_name}",
+                                                                          "method": "post",
+                                                                          "messages": {
+                                                                          }
+                                                                        }
+                                                                      },
+                                                                      "actionType": "ajax",
+                                                                      "outputVar": "responseResult"
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              },
+                                                              "id": "u:96ebdaba0273",
+                                                              "size": "lg",
+                                                              "block": true
+                                                            }
+                                                          ],
+                                                          "id": "u:a08e6a955007",
+                                                          "className": "",
+                                                          "hidden": false
+                                                        },
+                                                        {
+                                                          "type": "timeline",
+                                                          "label": "时间轴",
+                                                          "name": "timeline",
+                                                          "id": "u:4d0739883479",
+                                                          "mode": "right",
+                                                          "reverse": false,
+                                                          "direction": "vertical",
+                                                          "source": "servers/messages?user_name=${user_name}&server_name=${server_name}&category_name=${category_name}&channel_name=${channel_name}",
+                                                          "visibleOn": "${AND(${${channel_type}==1},${!isStatic})}"
+                                                        },
+                                                        {
+                                                          "label": "",
+                                                          "type": "input-text",
+                                                          "name": "content",
+                                                          "id": "u:9bd069cf5dba",
+                                                          "addOn": {
+                                                            "label": "发送",
+                                                            "type": "button",
+                                                            "level": "primary",
+                                                            "id": "u:74063d472756",
+                                                            "onEvent": {
+                                                              "click": {
+                                                                "actions": [
+                                                                  {
+                                                                    "args": {
+                                                                      "options": {
+                                                                        "silent": false
+                                                                      },
+                                                                      "api": {
+                                                                        "url": "servers/send_message?user_name={user_name}&server_name=${server_name}&category_name=${category_name}&channel_name=${channel_name}&content=${content}",
+                                                                        "method": "post",
+                                                                        "messages": {
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    "outputVar": "responseResult",
+                                                                    "actionType": "ajax",
+                                                                    "expression": "${!ISEMPTY(${content})}"
+                                                                  }
+                                                                ],
+                                                                "weight": 0
+                                                              }
+                                                            }
+                                                          },
+                                                          "visibleOn": "${${channel_type}==1}",
+                                                          "hiddenOn": "${!isStatic}"
+                                                        }
+                                                      ],
+                                                      "actions": [
+                                                      ],
+                                                      "wrapWithPanel": false
+                                                    }
+                                                  ],
+                                                  "id": "u:f0aeb755060b",
+                                                  "data": {
+                                                    "isStatic": false
+                                                  }
+                                                }
+                                              ],
+                                              "tabsMode": "vertical"
+                                            }
+                                          ],
+                                          "id": "u:1da1b93dee6c"
+                                        }
+                                      ],
+                                      "source": "${categories}"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "body": [
+                                    {
+                                      "type": "button",
+                                      "label": "查看服务器",
+                                      "onEvent": {
+                                        "click": {
+                                          "actions": [
+                                            {
+                                              "args": {
+                                                "blank": false,
+                                                "url": "server_info?user_name=${user_name}&server_name=${server_name}"
+                                              },
+                                              "actionType": "url"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "id": "u:52db362264bb",
+                                      "size": "lg",
+                                      "block": true,
+                                      "level": "enhance",
+                                      "visibleOn": "${!ISEMPTY(${server_name})}"
+                                    },
+                                    {
+                                      "type": "tpl",
+                                      "tpl": "服务器成员",
+                                      "inline": true,
+                                      "wrapperComponent": "h3",
+                                      "className": "text-primary",
+                                      "id": "u:f6bb86a07b26",
+                                      "visibleOn": "${!ISEMPTY(${server_name})}"
+                                    },
+                                    {
+                                      "type": "nav",
+                                      "stacked": true,
+                                      "id": "u:928000a40f8d",
+                                      "source": "${groups}"
+                                    },
+                                    {
+                                      "type": "button",
+                                      "label": "创建用户组",
+                                      "onEvent": {
+                                        "click": {
+                                          "actions": [
+                                            {
+                                              "args": {
+                                                "blank": false,
+                                                "url": "create_group?user_name=${user_name}&server_name=${server_name}"
+                                              },
+                                              "actionType": "url"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "id": "u:f31bcbdd31e2",
+                                      "level": "success",
+                                      "size": "lg",
+                                      "block": true,
+                                      "visibleOn": "${canManage}"
+                                    }
+                                  ],
+                                  "id": "u:ac2e59b58203"
+                                }
+                              ]
+                            }
+                          ],
+                          "id": "u:3fca93f42ee7",
+                          "api": "servers/checkuser?user_name=${user_name}&server_name=${server_name}"
+                        }
+                      ]
+                    }
+                  ],
+                  "id": "u:c735879cc0de",
+                  "tabsMode": "vertical",
+                  "source": "${servers}"
+                }
+              ],
+              "id": "u:81f78a62eaa5"
+            },
+            {
+              "title": "好友",
+              "body": [
+                {
+                  "type": "tabs",
+                  "tabs": [
+                    {
+                      "title": "${other_user_name}",
+                      "body": [
+                        {
+                          "type": "timeline",
+                          "label": "聊天信息",
+                          "name": "timeline",
+                          "id": "u:d06904c1f7e8",
+                          "mode": "right",
+                          "reverse": false,
+                          "direction": "vertical",
+                          "source": "friends/messages?user_name=${user_name}&other_user_name=${other_user_name}"
+                        },
+                        {
+                          "type": "input-text",
+                          "label": "",
+                          "name": "content",
+                          "id": "u:9bd069cf5dba",
+                          "addOn": {
+                            "label": "发送",
+                            "type": "button",
+                            "level": "primary",
+                            "id": "u:74063d472756",
+                            "onEvent": {
+                              "click": {
+                                "actions": [
+                                  {
+                                    "args": {
+                                      "options": {
+                                        "silent": false
+                                      },
+                                      "api": {
+                                        "url": "friends/send_message?user_name=${user_name}&other_user_name=${other_user_name}&content=${content}",
+                                        "method": "post",
+                                        "messages": {
+                                        }
+                                      }
+                                    },
+                                    "outputVar": "responseResult",
+                                    "actionType": "ajax",
+                                    "expression": "${!ISEMPTY(${content})}"
+                                  }
+                                ],
+                                "weight": 0
+                              }
+                            }
+                          },
+                          "visibleOn": "${!ISEMPTY(${other_user_name})}"
+                        }
+                      ],
+                      "id": "u:c1ab2c940fbd"
+                    }
+                  ],
+                  "tabsMode": "vertical",
+                  "source": "${friends}",
+                  "id": "u:cb1ecec0fb5b"
+                }
+              ],
+              "id": "u:21821a3336cb"
+            },
+            {
+              "title": "新的好友申请",
+              "body": [
+                {
+                  "type": "tabs",
+                  "tabs": [
+                    {
+                      "title": "${other_user_name}",
+                      "body": [
+                        {
+                          "type": "button-toolbar",
+                          "label": "",
+                          "buttons": [
+                            {
+                              "type": "button",
+                              "label": "接受",
+                              "onEvent": {
+                                "click": {
+                                  "actions": [
+                                    {
+                                      "args": {
+                                        "options": {
+                                          "silent": false
+                                        },
+                                        "api": {
+                                          "url": "friends/accept?user_name=${user_name}&other_user_name=${other_user_name}",
+                                          "method": "post",
+                                          "messages": {
+                                          }
+                                        }
+                                      },
+                                      "outputVar": "responseResult",
+                                      "actionType": "ajax"
+                                    },
+                                    {
+                                      "componentId": "u:26c4e05d0e8c",
+                                      "actionType": "reload",
+                                      "data": null
+                                    }
+                                  ]
+                                }
+                              },
+                              "id": "u:f16594cc1a92",
+                              "size": "lg",
+                              "level": "success",
+                              "className": "m-r-lg"
+                            },
+                            {
+                              "type": "button",
+                              "label": "拒绝",
+                              "onEvent": {
+                                "click": {
+                                  "actions": [
+                                    {
+                                      "args": {
+                                        "options": {
+                                          "silent": false
+                                        },
+                                        "api": {
+                                          "url": "friends/reject?user_name=${user_name}&other_user_name=${other_user_name}",
+                                          "method": "delete",
+                                          "messages": {
+                                          }
+                                        }
+                                      },
+                                      "actionType": "ajax",
+                                      "outputVar": "responseResult"
+                                    },
+                                    {
+                                      "componentId": "u:26c4e05d0e8c",
+                                      "actionType": "reload",
+                                      "data": null
+                                    }
+                                  ]
+                                }
+                              },
+                              "id": "u:b291ab6a79a7",
+                              "level": "danger",
+                              "size": "lg"
+                            }
+                          ],
+                          "id": "u:1eb7ca1fbf5c",
+                          "mode": "horizontal",
+                          "className": "",
+                          "visibleOn": "${!ISEMPTY(${other_user_name})}"
+                        }
+                      ],
+                      "id": "u:5f6b31ed7d49"
+                    }
+                  ],
+                  "tabsMode": "vertical",
+                  "source": "${new_friend_applications}",
+                  "id": "u:b061d6a7085f"
+                }
+              ],
+              "id": "u:b25431d6ee16"
+            }
+          ],
+          "id": "u:09692ac03143"
+        }
+      ],
+      "id": "u:26c4e05d0e8c",
+      "messages": {
+      },
+      "className": "m-t-lg",
+      "api": {
+        "url": "servers/main?user_name=${user_name}",
+        "method": "get"
+      }
+    }
+  ],
+  "id": "u:167dc13b0e32",
+  "pullRefresh": {
+    "disabled": true
+  },
+  "aside": [
+    {
+      "type": "grid",
+      "id": "u:b62e7085e408",
+      "columns": [
+        {
+          "id": "u:11010040b30f",
+          "md": 4
+        },
+        {
+          "id": "u:8f1de663670a",
+          "valign": "bottom"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "id": "u:2b7f8d583c4f"
+    },
+    {
+      "type": "service",
+      "body": [
+        {
+          "type": "button-group",
+          "buttons": [
+          ],
+          "sourse": "servers",
+          "id": "u:bb60666509ec",
+          "vertical": true,
+          "className": "w-full"
+        }
+      ],
+      "id": "u:c7dce5a821b2"
+    },
+    {
+      "type": "divider",
+      "id": "u:997e863e693e"
+    },
+    {
+      "type": "button-group",
+      "buttons": [
+        {
+          "type": "button",
+          "label": "搜索服务器",
+          "onEvent": {
+            "click": {
+              "actions": [
+              ]
+            }
+          },
+          "id": "u:9f02aa199bf7",
+          "size": "lg"
+        },
+        {
+          "type": "button",
+          "label": "创建服务器",
+          "onEvent": {
+            "click": {
+              "actions": [
+              ]
+            }
+          },
+          "id": "u:f16399a760d4",
+          "size": "lg"
+        }
+      ],
+      "id": "u:b81cb78c5107",
+      "vertical": true,
+      "className": "w-full"
+    }
+  ],
+  "asideSticky": true
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>

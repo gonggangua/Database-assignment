@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>搜索服务器/用户</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
+  "body": [
+    {
+      "type": "tabs",
+      "tabs": [
+        {
+          "id": "u:81f78a62eaa5",
+          "title": "服务器",
+          "body": [
+            {
+              "type": "service",
+              "body": [
+                {
+                  "type": "input-text",
+                  "label": "",
+                  "name": "keyword",
+                  "id": "u:bc0303467a86",
+                  "addOn": {
+                    "label": "搜索",
+                    "type": "button",
+                    "id": "u:40d0dd3dba89",
+                    "level": "primary",
+                    "size": "lg",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                          {
+                            "componentId": "u:269dd5e23758",
+                            "actionType": "reload",
+                            "data": null
+                          }
+                        ],
+                        "weight": 0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "nav",
+                  "stacked": true,
+                  "source": "${servers}",
+                  "id": "u:54edaf6b2e1e"
+                }
+              ],
+              "id": "u:269dd5e23758",
+              "messages": {
+              },
+              "api": {
+                "url": "servers/search?user_name=${user_name}&keyword=${kerword}",
+                "method": "get",
+                "messages": {
+                }
+              }
+            }
+          ]
+        },
+        {
+          "title": "用户",
+          "body": [
+            {
+              "type": "service",
+              "body": [
+                {
+                  "type": "input-text",
+                  "label": "",
+                  "name": "password",
+                  "id": "u:05ff02ac3a95",
+                  "addOn": {
+                    "label": "搜索",
+                    "type": "button",
+                    "id": "u:a583db9e7cd4",
+                    "size": "lg",
+                    "block": false,
+                    "level": "primary",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                          {
+                            "componentId": "u:4ffe355189f5",
+                            "actionType": "reload",
+                            "data": null
+                          }
+                        ],
+                        "weight": 0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "nav",
+                  "stacked": true,
+                  "source": "${users}",
+                  "id": "u:f1595adb5533"
+                }
+              ],
+              "id": "u:4ffe355189f5",
+              "messages": {
+              },
+              "api": {
+                "url": "user/search?user_name=${user_name}&keyword=${kerword}",
+                "method": "get",
+                "messages": {
+                }
+              }
+            }
+          ],
+          "id": "u:21821a3336cb"
+        }
+      ],
+      "id": "u:09692ac03143"
+    }
+  ],
+  "id": "u:167dc13b0e32",
+  "pullRefresh": {
+    "disabled": true
+  },
+  "aside": [
+    {
+      "type": "grid",
+      "id": "u:b62e7085e408",
+      "columns": [
+        {
+          "id": "u:11010040b30f",
+          "md": 4
+        },
+        {
+          "id": "u:8f1de663670a",
+          "valign": "bottom"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "id": "u:2b7f8d583c4f"
+    },
+    {
+      "type": "service",
+      "body": [
+        {
+          "type": "button-group",
+          "buttons": [
+          ],
+          "sourse": "servers",
+          "id": "u:bb60666509ec",
+          "vertical": true,
+          "className": "w-full"
+        }
+      ],
+      "id": "u:c7dce5a821b2"
+    },
+    {
+      "type": "divider",
+      "id": "u:997e863e693e"
+    },
+    {
+      "type": "button-group",
+      "buttons": [
+        {
+          "type": "button",
+          "label": "搜索服务器",
+          "onEvent": {
+            "click": {
+              "actions": [
+              ]
+            }
+          },
+          "id": "u:9f02aa199bf7",
+          "size": "lg"
+        },
+        {
+          "type": "button",
+          "label": "创建服务器",
+          "onEvent": {
+            "click": {
+              "actions": [
+              ]
+            }
+          },
+          "id": "u:f16399a760d4",
+          "size": "lg"
+        }
+      ],
+      "id": "u:b81cb78c5107",
+      "vertical": true,
+      "className": "w-full"
+    }
+  ],
+  "asideSticky": true
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>

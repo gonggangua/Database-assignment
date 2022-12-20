@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <title>服务器信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="/amis/sdk.css" />
+    <link rel="stylesheet" href="/amis/helper.css" />
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="/amis/sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
+  "body": [
+    {
+      "type": "form",
+      "id": "u:2bec2f90e35d",
+      "body": [
+        {
+          "type": "input-text",
+          "id": "u:0ac0a678dd54",
+          "label": "名称",
+          "name": "server_name",
+          "value": ""
+        },
+        {
+          "type": "input-text",
+          "id": "u:b7fcdadbc051",
+          "label": "拥有者",
+          "name": "owner_name",
+          "value": "",
+          "readOnly": true,
+          "disabled": true
+        },
+        {
+          "type": "radios",
+          "label": "是否为私有",
+          "name": "isPrivate",
+          "options": [
+            {
+              "label": "是",
+              "value": true
+            },
+            {
+              "label": "否",
+              "value": false
+            }
+          ],
+          "id": "u:f1163e45b5e4",
+          "required": true
+        }
+      ],
+      "api": {
+        "url": "servers/server_info_change?user_name=${user_name}&server_name=${server_name}",
+        "method": "get",
+        "messages": {
+        }
+      },
+      "title": "服务器信息",
+      "actions": [
+      ],
+      "initApi": {
+        "method": "get",
+        "url": "servers/server_info?user_name=${user_name}}&server_name=${server_name}",
+        "messages": {
+        }
+      },
+      "disabled": true
+    },
+    {
+      "type": "button-toolbar",
+      "buttons": [
+        {
+          "type": "button",
+          "label": "编辑",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "value": {
+                      "isStatic": false
+                    }
+                  },
+                  "actionType": "setValue",
+                  "componentId": "u:e9db51a5c817"
+                },
+                {
+                  "actionType": "enabled",
+                  "componentId": "u:2bec2f90e35d",
+                  "args": {
+                  }
+                }
+              ]
+            }
+          },
+          "id": "u:662531460b82",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": "${AND(${isStatic},${isowner})}"
+        },
+        {
+          "type": "button",
+          "label": "确定",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "value": {
+                      "isStatic": true
+                    }
+                  },
+                  "actionType": "setValue",
+                  "componentId": "u:e9db51a5c817",
+                  "expression": ""
+                },
+                {
+                  "actionType": "disabled",
+                  "componentId": "u:2bec2f90e35d",
+                  "expression": ""
+                },
+                {
+                  "componentId": "u:2bec2f90e35d",
+                  "actionType": "submit",
+                  "expression": ""
+                }
+              ]
+            }
+          },
+          "id": "u:faadca012501",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": "${!isStatic}"
+        },
+        {
+          "type": "button",
+          "label": "服务器统计数据",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                  },
+                  "dialog": {
+                    "type": "dialog",
+                    "title": "服务器统计数据",
+                    "body": [
+                      {
+                        "type": "form",
+                        "title": "服务器统计数据",
+                        "body": [
+                          {
+                            "label": "总信息条数",
+                            "type": "input-text",
+                            "name": "messageCnt",
+                            "id": "u:b338d7c7c58f"
+                          },
+                          {
+                            "type": "input-text",
+                            "name": "totalLength",
+                            "label": "总信息字数",
+                            "id": "u:18aaed0ef7e0"
+                          },
+                          {
+                            "type": "input-text",
+                            "name": "callCnt",
+                            "label": "总通话次数",
+                            "id": "u:eb68c7098d9e"
+                          },
+                          {
+                            "type": "input-text",
+                            "name": "totalTime",
+                            "label": "总通话时间",
+                            "id": "u:8aa31c5fd024"
+                          }
+                        ],
+                        "api": {
+                          "url": "servers/status?user_name=${user_name}&server_name=${server_name}",
+                          "method": "get"
+                        },
+                        "id": "u:b1ef219aaffd",
+                        "disabled": true,
+                        "initApi": {
+                          "url": "servers/status?user_name=${user_name}&server_name=${server_name}",
+                          "method": "get",
+                          "messages": {
+                          }
+                        }
+                      }
+                    ],
+                    "showCloseButton": true,
+                    "showErrorMsg": true,
+                    "showLoading": true,
+                    "id": "u:a34cecf0ad4d",
+                    "closeOnEsc": false,
+                    "dataMapSwitch": false
+                  },
+                  "actionType": "dialog"
+                }
+              ]
+            }
+          },
+          "id": "u:931bb6bfe3c9",
+          "size": "lg",
+          "level": "primary",
+          "visibleOn": "${canStats}"
+        },
+        {
+          "type": "button",
+          "label": "加入服务器",
+          "id": "u:27553325fb27",
+          "size": "lg",
+          "level": "success",
+          "disabledOn": "${isbanned}",
+          "visibleOn": "${!ismember}",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "servers/join?user_name=${user_name}&server_name=${server_name}",
+                      "method": "post",
+                      "messages": {
+                        "success": "加入成功"
+                      }
+                    }
+                  },
+                  "actionType": "ajax",
+                  "outputVar": "responseResult"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "refresh"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        },
+        {
+          "type": "button",
+          "label": "退出服务器",
+          "id": "u:0fca8d0d90b0",
+          "size": "lg",
+          "level": "danger",
+          "confirmText": "确定要退出服务器吗？",
+          "visibleOn": "${ismember}",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "servers/quit?user_name=${user_name}&server_name=${server_name}",
+                      "method": "delete",
+                      "messages": {
+                        "success": "已从服务器退出"
+                      }
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "refresh"
+                }
+              ],
+              "weight": 0
+            }
+          },
+          "disabledOn": "${isowner}"
+        },
+        {
+          "type": "button",
+          "label": "解散服务器",
+          "id": "u:9e522a69cdf4",
+          "size": "lg",
+          "level": "danger",
+          "confirmText": "确定要解散服务器吗？",
+          "visibleOn": "${isowner}",
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "args": {
+                    "options": {
+                      "silent": false
+                    },
+                    "api": {
+                      "url": "servers/delete?user_name=${user_name}&server_name=${server_name}",
+                      "method": "delete",
+                      "messages": {
+                      }
+                    }
+                  },
+                  "outputVar": "responseResult",
+                  "actionType": "ajax"
+                },
+                {
+                  "args": {
+                  },
+                  "actionType": "goBack"
+                }
+              ],
+              "weight": 0
+            }
+          }
+        }
+      ],
+      "id": "u:828dfa5cd828",
+      "name": "button-toolbar",
+      "actions": [
+      ]
+    }
+  ],
+  "id": "u:e9db51a5c817",
+  "pullRefresh": {
+    "disabled": true
+  },
+  "data": {
+    "isStatic": true
+  },
+  "api": [
+    "servers/checkuser?user_name=${user_name}&server_name=${server_name}"
+  ]
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+ 
+</html>
