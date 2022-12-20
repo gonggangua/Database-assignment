@@ -26,6 +26,15 @@ import org.junit.Test;
 import java.util.List;
 
 public class LoginTest {
+    @Test
+    public void loginfail() {
+        try {
+            Login testLogin = new Login("zhangsan", "233333");
+        } catch (LoginFailException e) {
+            e.printStackTrace();
+            System.out.println("111");
+        }
+    }
 
     @Test
     public void testCreateServer() throws Exception {

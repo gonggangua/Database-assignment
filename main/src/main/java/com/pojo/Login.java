@@ -20,6 +20,7 @@ import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +35,16 @@ public class Login {
         try {
             ret = MybatisUtil.getSqlSession(login);
         } catch (Exception e) {
-            if (e instanceof PersistenceException) {
-                e.printStackTrace();
-                throw new LoginFailException();
-            }
+            e.printStackTrace();
+            throw new LoginFailException();
         }
         assert ret != null;
         LoginMapper mapper = ret.getMapper(LoginMapper.class);
-        mapper.setRole();
+        try {
+            mapper.setRole();
+        } catch (Exception e) {
+            throw new LoginFailException();
+        }
         return ret;
     }
 
