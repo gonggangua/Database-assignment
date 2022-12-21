@@ -68,6 +68,20 @@ public class Message implements Comparable<Message> {
     }
 
     @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (! (o instanceof Message)) {
+            return false;
+        } else {
+            return id == ((Message) o).id;
+        }
+    }
+
+    @Override
     public int compareTo(Message o) {
         return Integer.compare(id, o.id);
     }
