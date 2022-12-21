@@ -18,7 +18,7 @@ public interface ServerMapper {
 
     List<Server> selectByName(String name);
 
-    List<Server> selectByAccurateName(Server server);
+    List<Server> selectByAccurateName(String name);
 
     void update(Server server);
 
