@@ -33,7 +33,7 @@
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
                 <property name="url" value=
-                        "jdbc:mysql://localhost:3306/assignment?serverTimezone=UTC%2B8&amp;useSSL=false&amp;
+                        "jdbc:mysql://localhost:3306/assignment?serverTimezone=UTC&amp;useSSL=false&amp;
                         allowPublicKeyRetrieval=true&amp;useUnicode=true&amp;allowMultiQueries=true&amp;characterEncoding=UTF-8"/>
                 <property name="username" value="${username}"/>
                 <property name="password" value="${password}"/>
