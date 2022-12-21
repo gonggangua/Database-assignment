@@ -236,36 +236,7 @@ public class ServerInteract {
         root.close();
     }
 
-    //创建分区
-    public void createCategory(String name)
-            throws NoPermissionException, DuplicateNameException {
-        SqlSession root = MybatisUtil.getRootSqlSession();
-
-        checkCreate(cur, server, root);
-
-        Category category = new Category(server.getId(), name);
-        try {
-            CategoryMapper categoryMapper = root.getMapper(CategoryMapper.class);
-            categoryMapper.insert(category);
-        } catch (Exception e) {
-            throw new DuplicateNameException(name);
-        }
-
-
-        Group group = getGroup(cur, server, root);
-        CategoryVisible sameVisible = new CategoryVisible(server.getId(), name, group.getName());
-        CategoryVisibleMapper visibleMapper =
-                root.getMapper(CategoryVisibleMapper.class);
-        visibleMapper.insert(sameVisible);
-        if (!group.getName().equals("creator")) {
-            CategoryVisible creatorVisible = new CategoryVisible(server.getId(), name, "creator");
-            visibleMapper.insert(creatorVisible);
-        }
-
-        root.commit();
-        root.close();
-    }
-
+    //更新服务器名字/是否私有
     public void updateServerInfo(String name, Boolean isPrivate)
             throws NoPermissionException, DuplicateNameException {
         SqlSession root = MybatisUtil.getRootSqlSession();
@@ -296,6 +267,44 @@ public class ServerInteract {
         }
         server.setName(newServer.getName());
         server.setPrivate(newServer.isPrivate());
+        root.commit();
+        root.close();
+    }
+
+    //创建分区
+    public void createCategory(String name)
+            throws NoPermissionException, DuplicateNameException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+
+        checkCreate(cur, server, root);
+
+        Category category = new Category(server.getId(), name);
+        try {
+            CategoryMapper categoryMapper = root.getMapper(CategoryMapper.class);
+            categoryMapper.insert(category);
+        } catch (Exception e) {
+            throw new DuplicateNameException(name);
+        }
+
+
+        Group group = getGroup(cur, server, root);
+        CategoryVisible sameVisible = new CategoryVisible(server.getId(), name, group.getName());
+        CategoryVisibleMapper visibleMapper =
+                root.getMapper(CategoryVisibleMapper.class);
+        visibleMapper.insert(sameVisible);
+        if (!group.getName().equals("creator")) {
+            CategoryVisible creatorVisible = new CategoryVisible(server.getId(), name, "creator");
+            visibleMapper.insert(creatorVisible);
+        }
+        if (!group.getName().equals("regular")) {
+            CategoryVisible creatorVisible = new CategoryVisible(server.getId(), name, "regular");
+            visibleMapper.insert(creatorVisible);
+        }
+        if (!group.getName().equals("admin")) {
+            CategoryVisible creatorVisible = new CategoryVisible(server.getId(), name, "admin");
+            visibleMapper.insert(creatorVisible);
+        }
+
         root.commit();
         root.close();
     }
