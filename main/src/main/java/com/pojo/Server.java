@@ -75,4 +75,13 @@ public class Server {
     public int hashCode() {
         return Integer.hashCode(id);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (! (o instanceof Server)) {
+            return false;
+        } {
+            return id == ((Server) o).id;
+        }
+    }
 }
