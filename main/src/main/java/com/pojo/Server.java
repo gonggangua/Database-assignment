@@ -38,6 +38,22 @@ public class Server {
         return isPrivate;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCreator(int creator) {
+        this.creator = creator;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
     public Server(String name, int creator, boolean isPrivate) {
         id = 0;
         this.name = name;

@@ -42,6 +42,12 @@
         grant select, show view on `members_${sid}` to #{uname}
     </update>
 
+    <update id="update" parameterType="Server">
+        update servers
+        set `name` = #{name}, `isPrivate` = #{isPrivate}
+        where id = #{id}
+    </update>
+
     <select id="getServerStats" parameterType="Server" resultType="ServerStat" >
         call getServerStats(#{id})
     </select>

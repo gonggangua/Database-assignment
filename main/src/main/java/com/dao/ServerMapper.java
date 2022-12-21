@@ -19,6 +19,8 @@ public interface ServerMapper {
 
     List<Server> selectByAccurateName(Server server);
 
+    void update(Server server);
+
     void createServerMembers(Server server);
 
     void grantServerMembers(Map<String, Object> map);

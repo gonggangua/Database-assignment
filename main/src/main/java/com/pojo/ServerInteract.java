@@ -266,6 +266,40 @@ public class ServerInteract {
         root.close();
     }
 
+    public void updateServerInfo(String name, Boolean isPrivate)
+            throws NoPermissionException, DuplicateNameException {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        Group group = getGroup(cur, server, root);
+        if (!group.getName().equals("creator")) {
+            root.close();
+            throw new NoPermissionException("update server info");
+        }
+        Server newServer = new Server();
+        newServer.setId(server.getId());
+        newServer.setCreator(server.getCreator());
+        if (name != null) {
+            newServer.setName(name);
+        } else {
+            newServer.setName(server.getName());
+        }
+        if (isPrivate != null) {
+            newServer.setPrivate(isPrivate);
+        } else {
+            newServer.setPrivate(server.isPrivate());
+        }
+        try {
+            ServerMapper mapper = root.getMapper(ServerMapper.class);
+            mapper.update(newServer);
+        } catch (Exception e) {
+            root.close();
+            throw new DuplicateNameException(newServer.getName());
+        }
+        server.setName(newServer.getName());
+        server.setPrivate(newServer.isPrivate());
+        root.commit();
+        root.close();
+    }
+
     //设置分区对某用户组可见
     public void setVisible(Category category, Group group)
             throws NoPermissionException, AlreadyExistException {
