@@ -19,6 +19,7 @@ import com.pojo.types.UserStatus;
 import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -78,6 +79,14 @@ public class Login {
         mapper.logout(cur.getId());
         sqlSession.commit();
         sqlSession.close();
+    }
+
+    public List<Server> getPrivateServer() {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        ServerMapper serverMapper = root.getMapper(ServerMapper.class);
+        List<Server> ret = serverMapper.getPrivateServer(cur);
+        root.close();
+        return ret;
     }
 
     //设置个人状态
@@ -300,6 +309,7 @@ public class Login {
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
         List<Server> joinedServers = mapper.getJoinedServers(cur.getId());
         sqlSession.close();
+        joinedServers.addAll(getPrivateServer());
         return joinedServers;
     }
 

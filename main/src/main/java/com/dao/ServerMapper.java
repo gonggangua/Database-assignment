@@ -2,6 +2,7 @@ package com.dao;
 
 import com.pojo.Server;
 import com.pojo.ServerStat;
+import com.pojo.User;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ public interface ServerMapper {
     List<Server> selectByAccurateName(Server server);
 
     void update(Server server);
+
+    List<Server> getPrivateServer(User user);
 
     void createServerMembers(Server server);
 

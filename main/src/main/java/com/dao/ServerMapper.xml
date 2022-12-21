@@ -48,6 +48,11 @@
         where id = #{id}
     </update>
 
+    <select id="getPrivateServer" parameterType="User" resultType="Server">
+        select * from servers
+        where isPrivate = true and creator = #{id}
+    </select>
+
     <select id="getServerStats" parameterType="Server" resultType="ServerStat" >
         call getServerStats(#{id})
     </select>
