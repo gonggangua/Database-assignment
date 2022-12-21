@@ -274,7 +274,7 @@ public class Login {
         return ret;
     }
 
-    public List<Server> getAccurateServerByAccurateName(String name) {
+    public List<Server> getServerByAccurateName(String name) {
         SqlSession root = MybatisUtil.getRootSqlSession();
         ServerMapper serverMapper = root.getMapper(ServerMapper.class);
         List<Server> ret = serverMapper.selectByAccurateName(name);
