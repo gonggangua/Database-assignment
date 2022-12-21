@@ -189,7 +189,7 @@
                                               "level": "primary",
                                               "block": false,
                                               "size": "lg",
-                                              "visibleOn": "${canCreate}"
+                                              "visibleOn": "${AND(${canCreate},!ISEMPTY(${category_name}))}"
                                             },
                                             {
                                               "type": "tabs",
@@ -553,7 +553,7 @@
                                       "level": "success",
                                       "size": "lg",
                                       "block": true,
-                                      "visibleOn": "${canManage}"
+                                      "visibleOn": "false"
                                     }
                                   ],
                                   "id": "u:ac2e59b58203"
