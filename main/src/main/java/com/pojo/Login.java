@@ -19,6 +19,7 @@ import com.pojo.types.UserStatus;
 import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -263,6 +264,22 @@ public class Login {
         List<Server> servers = mapper.selectServerByAccurateName(name);
         sqlSession.close();
         return servers;
+    }
+
+    public List<Server> getServerById(int id) {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        ServerMapper serverMapper = root.getMapper(ServerMapper.class);
+        List<Server> ret = serverMapper.selectById(id);
+        root.close();
+        return ret;
+    }
+
+    public List<Server> getServerByAccurateName(String name) {
+        SqlSession root = MybatisUtil.getRootSqlSession();
+        ServerMapper serverMapper = root.getMapper(ServerMapper.class);
+        List<Server> ret = serverMapper.selectByAccurateName(name);
+        root.close();
+        return ret;
     }
 
     //id搜索服务器
