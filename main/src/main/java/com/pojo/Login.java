@@ -479,7 +479,7 @@ public class Login {
     public boolean checkIfBlocked(User user) {
         SqlSession root = MybatisUtil.getRootSqlSession();
 
-        UserBlacklist blacklist = new UserBlacklist(cur.getId(), user.getId());
+        UserBlacklist blacklist = new UserBlacklist(user.getId(), cur.getId());
         UserBlacklistMapper mapper = root.getMapper(UserBlacklistMapper.class);
 
         boolean ret;
