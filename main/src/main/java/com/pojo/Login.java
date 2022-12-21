@@ -428,17 +428,16 @@ public class Login {
             mapper.accept(friends);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                root.commit();
                 root.close();
                 throw new DoNotExistException();
             }
         }
         Friends both = new Friends(cur.getId(), user.getId(), true);
         try {
+            mapper.delete(both);
             mapper.insert(both);
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
-                root.commit();
                 root.close();
                 throw new BlockedException();
             }
