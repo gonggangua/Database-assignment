@@ -67,8 +67,8 @@
     <select id="getRequests" parameterType="User" resultType="User">
         select `userBasicInfo`.* from `friendsView_${id}`, `userBasicInfo`
         where (`status` = false) and
-        (`uid` = #{id}) and
-        (`target` = `userBasicInfo`.id)
+        (`target` = #{id}) and
+        (`uid` = `userBasicInfo`.id)
     </select>
 
     <select id="getBlockedUsers" parameterType="User" resultType="User">
