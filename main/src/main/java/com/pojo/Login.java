@@ -19,11 +19,11 @@ import com.pojo.types.UserStatus;
 import com.utils.MybatisUtil;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.test.context.jdbc.Sql;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -81,7 +81,7 @@ public class Login {
         sqlSession.close();
     }
 
-    public List<Server> getPrivateServer() {
+    public List<Server> getPrivateServers() {
         SqlSession root = MybatisUtil.getRootSqlSession();
         ServerMapper serverMapper = root.getMapper(ServerMapper.class);
         List<Server> ret = serverMapper.getPrivateServer(cur);
@@ -307,10 +307,11 @@ public class Login {
             e.printStackTrace();
         }
         LoginMapper mapper = sqlSession.getMapper(LoginMapper.class);
-        List<Server> joinedServers = mapper.getJoinedServers(cur.getId());
+        HashSet<Server> joinedServers = new HashSet<>(mapper.getJoinedServers(cur.getId()));
         sqlSession.close();
-        joinedServers.addAll(getPrivateServer());
-        return joinedServers;
+        joinedServers.addAll(getPrivateServers());
+        List<Server> ret = new ArrayList<>(joinedServers);
+        return ret;
     }
 
     //加入服务器

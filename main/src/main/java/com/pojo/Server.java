@@ -70,4 +70,9 @@ public class Server {
                 ", isPrivate=" + isPrivate +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
 }

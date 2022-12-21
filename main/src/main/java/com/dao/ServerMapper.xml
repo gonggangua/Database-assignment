@@ -49,8 +49,8 @@
     </update>
 
     <select id="getPrivateServer" parameterType="User" resultType="Server">
-        select * from servers
-        where isPrivate = true and creator = #{id}
+        select servers.id, servers.name, servers.creator from servers, joiningServer
+        where isPrivate = true and joiningServer.uid = #{id} and joiningServer.sid = servers.id
     </select>
 
     <select id="getServerStats" parameterType="Server" resultType="ServerStat" >
