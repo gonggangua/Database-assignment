@@ -748,6 +748,18 @@
       "api": {
         "url": "servers/main?user_name=${user_name}",
         "method": "get"
+      },
+      "onEvent": {
+        "fetchInited": {
+          "weight": 0,
+          "actions": [
+            {
+              "componentId": "u:3fca93f42ee7",
+              "actionType": "reload",
+              "data": null
+            }
+          ]
+        }
       }
     }
   ],

@@ -209,7 +209,14 @@
   "pullRefresh": {
     "disabled": true
   },
-  "api": "servers/checkuser?user_name=${user_name}&server_name=${server_name}"
+  "initApi": {
+    "url": "servers/checkuser?user_name=${user_name}&server_name=${server_name}",
+    "method": "get",
+    "data": {
+      "isStatic": true
+    },
+    "messages": {}
+  }
 };
             let amisScoped = amis.embed('#root', amisJSON);
         })();

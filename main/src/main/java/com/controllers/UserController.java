@@ -298,6 +298,7 @@ public class UserController {
         List<ServerBody> serversBodies = new ArrayList<>();
         retBody.addData("servers", serversBodies);
         for (Server server : servers) {
+            System.out.println("id:"+server.getId()+",name"+server.getName());
             ServerBody serverBody = new ServerBody(server.getName());
             ServerInteract si = login.enterServer(server);
             HashMap<String, HashSet<String>> userNames = new HashMap<>(); // <gname, <userName>>
@@ -789,12 +790,42 @@ public class UserController {
         if (objects.size() < 3) {
             return objects.get(objects.size() - 1);
         }
-        //Login login = (Login) objects.get(0);
+        Login login = (Login) objects.get(0);
         Server server = (Server) objects.get(1);
+        //ServerInteract si = login.enterServer(server);
         RetBody retBody = (RetBody) objects.get(2);
         retBody.addData("server_name", server.getName());
+        retBody.addData("owner_name", login.searchUser(server.getCreator()).get(0).getName());
         retBody.addData("isPrivate", server.isPrivate());
         return retBody;
+    }
+
+    @RequestMapping("/servers/server_info_change")
+    public Object changeServerInfo(@RequestParam String user_name, @RequestParam String server_name,
+                                   @RequestBody Map<String, Object> map) {
+        String new_name = (String) map.get("server_name");
+        boolean isPrivate = (boolean) map.get("isPrivate");
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        ServerInteract si = login.enterServer(server);
+        try {
+            si.updateServerInfo(new_name, isPrivate);
+        } catch (NoPermissionException e) {
+            e.printStackTrace();
+            RetBody retBody = new RetBody(e.toString());
+            retBody.setStatus(1);
+            return retBody;
+        } catch (DuplicateNameException e) {
+            e.printStackTrace();
+            RetBody retBody = new RetBody(e.toString());
+            retBody.setStatus(1);
+            return retBody;
+        }
+        return new RetBody(("Successful!"));
     }
 
     @RequestMapping("/servers/create")
@@ -851,7 +882,14 @@ public class UserController {
         ServerInteract si = login.enterServer(server);
         Group group = si.getUserGroup(login.self());
         RetBody retBody = new RetBody("Successful!");
-        retBody.addData("ismember", login.getJoinedServers().contains(server));
+        boolean ismember = false;
+        for (Server temp : login.getJoinedServers()) {
+            if (temp.getId() == server.getId()) {
+                ismember = true;
+                break;
+            }
+        }
+        retBody.addData("ismember", ismember);
         retBody.addData("isbanned", si.checkIfBanned());
         retBody.addData("isowner", server.getCreator() == login.self().getId());
         retBody.addData("canStats", group.isCanStats());

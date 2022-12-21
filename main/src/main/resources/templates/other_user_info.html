@@ -318,10 +318,21 @@
   "pullRefresh": {
     "disabled": true
   },
-  "api": [
-    "servers/checkuser?user_name=${user_name}&server_name=${server_name}",
-    "friends/checkrelationship?user_name=${user_name}&other_user_name=${other_user_name}"
-  ],
+  "initApi": [{
+    "url": "servers/checkuser?user_name=${user_name}&server_name=${server_name}",
+    "method": "get",
+    "data": {
+      "isStatic": true
+    },
+    "messages": {}
+  },{
+    "url": "friends/checkrelationship?user_name=${user_name}&other_user_name=${other_user_name}",
+    "method": "get",
+    "data": {
+      "isStatic": true
+    },
+    "messages": {}
+  }],
   "data": {
     "isStatic": true
   }
