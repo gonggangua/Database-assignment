@@ -11,6 +11,7 @@ public class GroupBody {
     public GroupBody(String label) {
         this.label = label;
         this.unfolded = true;
+        this.children = new ArrayList<>();
     }
 
     public void setTo(String user_name, String server_name, String group_name) {
