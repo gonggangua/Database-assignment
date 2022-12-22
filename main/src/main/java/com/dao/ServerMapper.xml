@@ -13,7 +13,7 @@
     </select>
 
     <delete id="dismiss" parameterType="Server">
-        delete * from servers
+        delete from servers
         where id = #{id}
     </delete>
 
