@@ -34,10 +34,6 @@
             // 通过替换下面这个配置来生成不同页面
             let amisJSON = {
   "type": "page",
-  "asideResizor": false,
-  "regions": [
-    "body"
-  ],
   "body": [
     {
       "type": "service",
@@ -54,12 +50,21 @@
               "name": "category_name",
               "id": "u:0ac0a678dd54",
               "value": ""
+            },
+            {
+              "type": "checkboxes",
+              "label": "用户组是否可见",
+              "name": "visible",
+              "id": "u:0b78bd8495c5",
+              "multiple": true,
+              "checkAll": true,
+              "joinValues": false,
+              "defaultCheckAll": false,
+              "source": "group_options?user_name=${user_name}&server_name=${server_name}",
+              "extractValue": true,
+              "checkAllLabel": "全选"
             }
           ],
-          "api": {
-            "url": "servers/create_category?user_name=${user_name}&server_name=${server_name}",
-            "method": "post"
-          },
           "className": "p-10",
           "actions": [
             {
@@ -143,7 +148,11 @@
             "saveSuccess": "",
             "saveFailed": ""
           },
-          "submitText": "注册"
+          "submitText": "注册",
+          "api": {
+            "url": "servers/create_category?user_name=${user_name}&server_name=${server_name}",
+            "method": "post"
+          }
         }
       ],
       "messages": {
@@ -176,6 +185,11 @@
       }
     }
   ],
+  "className": "",
+  "asideResizor": false,
+  "regions": [
+    "body"
+  ],
   "id": "u:167dc13b0e32",
   "pullRefresh": {
     "disabled": true
@@ -195,8 +209,7 @@
     "fontFamily": "",
     "fontSize": 12,
     "textAlign": "left"
-  },
-  "className": ""
+  }
 };
             let amisScoped = amis.embed('#root', amisJSON);
         })();

@@ -46,35 +46,38 @@
         {
           "id": "u:81f78a62eaa5",
           "title": "服务器",
+          "hash": "服务器",
           "body": [
             {
-              "type": "service",
-              "body": [
-                {
-                  "type": "input-text",
-                  "label": "",
-                  "name": "keyword",
-                  "id": "u:bc0303467a86",
-                  "addOn": {
-                    "label": "搜索",
-                    "type": "button",
-                    "id": "u:40d0dd3dba89",
-                    "level": "primary",
-                    "size": "lg",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
-                          {
-                            "componentId": "u:269dd5e23758",
-                            "actionType": "reload",
-                            "dataMergeMode": "override"
-                          }
-                        ],
-                        "weight": 0
+              "type": "input-text",
+              "label": "",
+              "name": "keyword",
+              "id": "u:bc0303467a86",
+              "addOn": {
+                "label": "搜索",
+                "type": "button",
+                "id": "u:40d0dd3dba89",
+                "level": "primary",
+                "size": "lg",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "reload",
+                        "expression": "${!ISEMPTY(${keyword})}",
+                        "componentId": "u:269dd5e23758",
+                        "data": null
                       }
-                    }
+                    ],
+                    "weight": 0
                   }
-                },
+                }
+              }
+            },
+            {
+              "type": "service",
+              "id": "u:269dd5e23758",
+              "body": [
                 {
                   "type": "nav",
                   "stacked": true,
@@ -82,11 +85,10 @@
                   "id": "u:54edaf6b2e1e"
                 }
               ],
-              "id": "u:269dd5e23758",
               "messages": {
               },
               "api": {
-                "url": "servers/search?user_name=${user_name}&keyword=${kerword}",
+                "url": "servers/search?user_name=${user_name}&keyword=${keyword}",
                 "method": "get",
                 "messages": {
                 }
@@ -96,36 +98,40 @@
         },
         {
           "title": "用户",
+          "hash": "用户",
           "body": [
             {
-              "type": "service",
-              "body": [
-                {
-                  "type": "input-text",
-                  "label": "",
-                  "name": "password",
-                  "id": "u:05ff02ac3a95",
-                  "addOn": {
-                    "label": "搜索",
-                    "type": "button",
-                    "id": "u:a583db9e7cd4",
-                    "size": "lg",
-                    "block": false,
-                    "level": "primary",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
-                          {
-                            "componentId": "u:4ffe355189f5",
-                            "actionType": "reload",
-                            "dataMergeMode": "override"
-                          }
-                        ],
-                        "weight": 0
+              "type": "input-text",
+              "label": "",
+              "name": "user_keyword",
+              "id": "u:05ff02ac3a95",
+              "addOn": {
+                "label": "搜索",
+                "type": "button",
+                "id": "u:a583db9e7cd4",
+                "size": "lg",
+                "block": false,
+                "level": "primary",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "reload",
+                        "expression": "${!ISEMPTY(${user_keyword})}",
+                        "componentId": "u:4ffe355189f5",
+                        "outputVar": "responseResult",
+                        "data": null
                       }
-                    }
+                    ],
+                    "weight": 0
                   }
-                },
+                }
+              }
+            },
+            {
+              "type": "service",
+              "id": "u:4ffe355189f5",
+              "body": [
                 {
                   "type": "nav",
                   "stacked": true,
@@ -133,11 +139,10 @@
                   "id": "u:f1595adb5533"
                 }
               ],
-              "id": "u:4ffe355189f5",
               "messages": {
               },
               "api": {
-                "url": "user/search?user_name=${user_name}&keyword=${kerword}",
+                "url": "user/search?user_name=${user_name}&keyword=${user_keyword}",
                 "method": "get",
                 "messages": {
                 }
@@ -146,7 +151,9 @@
           ],
           "id": "u:21821a3336cb"
         }
-      ]
+      ],
+      "activeKey": "${type}",
+      "showTip": false
     }
   ],
   "id": "u:167dc13b0e32",

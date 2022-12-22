@@ -129,7 +129,8 @@ public class UserController {
         retBody.addData("user_name", user.getName());
         retBody.addData("mail", user.getMail());
         retBody.addData("level", user.getLevel());
-        retBody.addData("registry", user.getRegistry());
+        retBody.addData("registry", (user.getRegistry() == null) ? "" :
+                (new Date(user.getRegistry().getTime())).toString());
         retBody.addData("money", user.getMoney());
         return retBody;
     }
@@ -161,17 +162,28 @@ public class UserController {
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<User> users = login.searchUserByAccurateName(other_user_name);
-        if (users.size() == 0) {
-            return new RetBody("Cannot find user!");
+        List<User> friends = login.getFriends();
+        User user = null;
+        for (User temp : friends) {
+            if (temp.getName().equals(other_user_name)) {
+                user = temp;
+                break;
+            }
         }
-        User user = users.get(0);
+        if (user == null) {
+            List<User> users = login.searchUserByAccurateName(other_user_name);
+            if (users.size() == 0) {
+                return new RetBody("Cannot find user!");
+            }
+            user = users.get(0);
+        }
         RetBody retBody = new RetBody("Successful!");
         retBody.addData("other_user_name", user.getName());
         retBody.addData("mail", user.getMail());
         retBody.addData("level", user.getLevel());
         retBody.addData("status", user.getStatus());
-        retBody.addData("registry", user.getRegistry());
+        retBody.addData("registry",(user.getRegistry() == null) ? "" :
+                (new Date(user.getRegistry().getTime())).toString());
         return retBody;
     }
 
@@ -187,7 +199,7 @@ public class UserController {
 
     @RequestMapping("/user/levelup")
     public Object levelUp(@RequestParam String user_name) {
-        System.out.println("in levelUp!");
+        //System.out.println("in levelUp!");
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -298,7 +310,7 @@ public class UserController {
         List<ServerBody> serversBodies = new ArrayList<>();
         retBody.addData("servers", serversBodies);
         for (Server server : servers) {
-            System.out.println("id:"+server.getId()+",name"+server.getName());
+            //System.out.println("id:"+server.getId()+",name"+server.getName());
             ServerBody serverBody = new ServerBody(server.getName());
             ServerInteract si = login.enterServer(server);
             HashMap<String, HashSet<String>> userNames = new HashMap<>(); // <gname, <userName>>
@@ -490,20 +502,22 @@ public class UserController {
             return new RetBody("Invalid channel_name!");
         }
         List<MessageBody> messageBodies = new ArrayList<>();
-        for (Message message : si.getMessages(channel)) {
-            if (!si.getNewMessages(channel).contains(message)) {
+        if (!channel.isType()) {
+            for (Message message : si.getMessages(channel)) {
+                if (!si.getNewMessages(channel).contains(message)) {
+                    messageBodies.add(new MessageBody(message.getSendTime(),
+                            login.searchUser(message.getSender()).get(0).getName(),
+                            message.getContent()));
+                }
+            }
+            messageBodies.add(new MessageBody(null, "以下为新消息"));
+            for (Message message : si.getNewMessages(channel)) {
                 messageBodies.add(new MessageBody(message.getSendTime(),
                         login.searchUser(message.getSender()).get(0).getName(),
                         message.getContent()));
             }
         }
-        messageBodies.add(new MessageBody(null, "以下为新消息"));
-        for (Message message : si.getNewMessages(channel)) {
-            messageBodies.add(new MessageBody(message.getSendTime(),
-                    login.searchUser(message.getSender()).get(0).getName(),
-                    message.getContent()));
-        }
-        retBody.addData("title", messageBodies);
+        retBody.addData("items", messageBodies);
         return retBody;
     }
 
@@ -554,6 +568,7 @@ public class UserController {
 
     private RetBody joinChannel(String user_name, String server_name,
                                String category_name, String channel_name) {
+        //System.out.println("user_name: " + user_name);
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -592,6 +607,7 @@ public class UserController {
             return new RetBody("Invalid channel_name!");
         }
         AccessingChannel accessingChannel = si.accessChannel(channel);
+        //System.out.println("channel: " + channel.getName());
         String key = "username=" + user_name + "&channel_name=" + channel_name;
         accessingChannelHashMap.put(key, accessingChannel);
         return retBody;
@@ -692,6 +708,7 @@ public class UserController {
 
     @RequestMapping("/friends/send_message")
     public Object sendFriendMessage(@RequestParam String user_name, @RequestParam String other_user_name, @RequestParam String content) {
+        //System.out.println("user_name: " + user_name + ", other_user: " + other_user_name);
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -713,6 +730,7 @@ public class UserController {
 
     @RequestMapping("/servers/search")
     public Object searchServers(@RequestParam String user_name, @RequestParam String keyword) {
+        //System.out.println("servers_keyword: " + keyword);
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -742,6 +760,7 @@ public class UserController {
 
     @RequestMapping("/user/search")
     public Object searchUser(@RequestParam String user_name, @RequestParam String keyword) {
+        //System.out.println("user_keyword: " + keyword);
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
@@ -774,7 +793,7 @@ public class UserController {
             return res;
         }
         res.add(login);
-        List<Server> servers = login.searchServerByAccurateName(server_name);
+        List<Server> servers = login.getServerByAccurateName(server_name);
         if (servers.size() == 0) {
             res.add(new RetBody("Server not found!"));
             return res;
@@ -794,7 +813,7 @@ public class UserController {
         Server server = (Server) objects.get(1);
         //ServerInteract si = login.enterServer(server);
         RetBody retBody = (RetBody) objects.get(2);
-        retBody.addData("server_name", server.getName());
+        retBody.addData("new_server_name", server.getName());
         retBody.addData("owner_name", login.searchUser(server.getCreator()).get(0).getName());
         retBody.addData("isPrivate", server.isPrivate());
         return retBody;
@@ -803,7 +822,9 @@ public class UserController {
     @RequestMapping("/servers/server_info_change")
     public Object changeServerInfo(@RequestParam String user_name, @RequestParam String server_name,
                                    @RequestBody Map<String, Object> map) {
-        String new_name = (String) map.get("server_name");
+        String new_name = (String) map.get("new_server_name");
+        //System.out.println("oldName: " + server_name);
+        //System.out.println("newName: " + new_name);
         boolean isPrivate = (boolean) map.get("isPrivate");
         List<Object> objects = findLoginAndServer(user_name, server_name);
         if (objects.size() < 3) {
@@ -830,7 +851,7 @@ public class UserController {
 
     @RequestMapping("/servers/create")
     public Object createServer(@RequestParam String user_name, @RequestBody Map<String, Object> map) {
-        System.out.println("in createServer!");
+        //System.out.println("in createServer!");
         String server_name = (String) map.get("server_name");
         //String owner_name = (String) map.get("owner_name");
         boolean isPrivate = (boolean) map.get("isPrivate");
@@ -854,7 +875,7 @@ public class UserController {
             return new RetBody("User is not logged in!");
         }
         RetBody retBody = new RetBody("Successful!");
-        List<Server> servers = login.searchServerByAccurateName(server_name);
+        List<Server> servers = login.getServerByAccurateName(server_name);
         retBody.addData("exist", servers.size() > 0);
         int userId = login.self().getId();
         int cnt = 0;
@@ -874,7 +895,7 @@ public class UserController {
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<Server> servers = login.searchServerByAccurateName(server_name);
+        List<Server> servers = login.getServerByAccurateName(server_name);
         if (servers.size() == 0) {
             return new RetBody("Server not found!");
         }
@@ -882,19 +903,30 @@ public class UserController {
         ServerInteract si = login.enterServer(server);
         Group group = si.getUserGroup(login.self());
         RetBody retBody = new RetBody("Successful!");
-        boolean ismember = false;
-        for (Server temp : login.getJoinedServers()) {
-            if (temp.getId() == server.getId()) {
-                ismember = true;
-                break;
+        if (group == null) {
+            retBody.addData("ismember", false);
+            retBody.addData("isbanned", false);
+            retBody.addData("isowner", false);
+            retBody.addData("canStats", false);
+            retBody.addData("canCreate", false);
+            retBody.addData("canManage", false);
+            retBody.addData("canBan", false);
+        } else {
+            boolean ismember = false;
+            for (Server temp : login.getJoinedServers()) {
+                if (temp.getId() == server.getId()) {
+                    ismember = true;
+                    break;
+                }
             }
+            retBody.addData("ismember", ismember);
+            retBody.addData("isbanned", si.checkIfBanned());
+            retBody.addData("isowner", server.getCreator() == login.self().getId());
+            retBody.addData("canStats", group.isCanStats());
+            retBody.addData("canCreate", group.isCanCreate());
+            retBody.addData("canManage", group.isCanManage());
+            retBody.addData("canBan", group.isCanBan());
         }
-        retBody.addData("ismember", ismember);
-        retBody.addData("isbanned", si.checkIfBanned());
-        retBody.addData("isowner", server.getCreator() == login.self().getId());
-        retBody.addData("canStats", group.isCanStats());
-        retBody.addData("canCreate", group.isCanCreate());
-        retBody.addData("canManage", group.isCanManage());
         return retBody;
     }
 
@@ -904,7 +936,7 @@ public class UserController {
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<Server> servers = login.searchServerByAccurateName(server_name);
+        List<Server> servers = login.getServerByAccurateName(server_name);
         if (servers.size() == 0) {
             return new RetBody("Server not found!");
         }
@@ -921,13 +953,29 @@ public class UserController {
         return new RetBody("Successful!");
     }
 
-    @RequestMapping("/servers/quit")
+    /*@RequestMapping("/servers/quit")
+    public Object quitServer(@RequestParam String user_name, @RequestParam String server_name) {
+        Login login = getLogin(user_name);
+        if (login == null) {
+            return new RetBody("User is not logged in!");
+        }
+        List<Server> servers = login.getServerByAccurateName(server_name);
+        if (servers.size() == 0) {
+            return new RetBody("Server not found!");
+        }
+        Server server = servers.get(0);
+        ServerInteract si = login.enterServer(server);
+        //si.
+        return new RetBody("Successful!");
+    }*/
+
+    @RequestMapping("/servers/delete")
     public Object dismissServer(@RequestParam String user_name, @RequestParam String server_name) {
         Login login = getLogin(user_name);
         if (login == null) {
             return new RetBody("User is not logged in!");
         }
-        List<Server> servers = login.searchServerByAccurateName(server_name);
+        List<Server> servers = login.getServerByAccurateName(server_name);
         if (servers.size() == 0) {
             return new RetBody("Server not found!");
         }
@@ -954,9 +1002,22 @@ public class UserController {
         }
         User other_user = otherUsers.get(0);
         RetBody retBody = new RetBody("Successful!");
-        retBody.addData("isfriend", login.getFriends().contains(other_user));
+        boolean isfriend = false, blocking = false;
+        for (User user : login.getFriends()) {
+            if (user.getId() == other_user.getId()) {
+                isfriend = true;
+                break;
+            }
+        }
+        for (User user : login.getBlockedUsers()) {
+            if (user.getId() == other_user.getId()) {
+                blocking = true;
+                break;
+            }
+        }
+        retBody.addData("isfriend", isfriend);
         retBody.addData("blocked", login.checkIfBlocked(other_user));
-        retBody.addData("blocking", login.getBlockedUsers().contains(other_user));
+        retBody.addData("blocking", blocking);
         return retBody;
     }
 
@@ -1001,7 +1062,7 @@ public class UserController {
             login.removeBlock(other_user);
         } catch (DoNotExistException e) {
             e.printStackTrace();
-            return new RetBody("Failed: " + e);
+            return new RetBody(1, "Failed: " + e);
         }
         return new RetBody("Successful!");
     }
@@ -1033,6 +1094,7 @@ public class UserController {
     public Object createCategory(@RequestParam String user_name, @RequestParam String server_name,
                                  @RequestBody Map<String, Object> map) {
         String category_name = (String) map.get("category_name");
+        ArrayList<Object> group_names = (ArrayList<Object>) map.get("visible");
         List<Object> objects = findLoginAndServer(user_name, server_name);
         if (objects.size() < 3) {
             return objects.get(objects.size() - 1);
@@ -1043,13 +1105,63 @@ public class UserController {
         ServerInteract si = login.enterServer(server);
         try {
             si.createCategory(category_name);
+            Category category = null;
+            for (Category temp : si.getCategories()) {
+                if (temp.getName().equals(category_name)) {
+                    category = temp;
+                    break;
+                }
+            }
+            if (category == null) {
+                return new RetBody(1, "Category not found!");
+            }
+            List<Group> groups = si.getGroups();
+            HashMap<String, Group> groupHashMap = new HashMap<>();
+            for (Group group : groups) {
+                groupHashMap.put(group.getName(), group);
+            }
+            for (Object group_name : group_names) {
+                groupHashMap.remove((String) group_name);
+            }
+            for (Group group : groupHashMap.values()) {
+                try {
+                    si.removeVisible(category, group);
+                } catch (AlreadyExistException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (NoPermissionException e) {
             e.printStackTrace();
-            return new RetBody(e.toString());
+            RetBody retBody1 = new RetBody(e.toString());
+            retBody1.setStatus(1);
+            return retBody1;
         } catch (DuplicateNameException e) {
             e.printStackTrace();
-            return new RetBody(e.toString());
+            RetBody retBody1 = new RetBody(e.toString());
+            retBody1.setStatus(1);
+            return retBody1;
         }
+        return retBody;
+    }
+
+    @RequestMapping("/group_options")
+    public Object getGroupOptions(@RequestParam String user_name, @RequestParam String server_name) {
+        List<Object> objects = findLoginAndServer(user_name, server_name);
+        if (objects.size() < 3) {
+            return objects.get(objects.size() - 1);
+        }
+        Login login = (Login) objects.get(0);
+        Server server = (Server) objects.get(1);
+        RetBody retBody = (RetBody) objects.get(2);
+        ServerInteract si = login.enterServer(server);
+        List<HashMap<String, String>> options = new ArrayList<>();
+        for (Group group : si.getGroups()) {
+            HashMap<String, String> option = new HashMap<>();
+            option.put("label", group.getName());
+            option.put("value", group.getName());
+            options.add(option);
+        }
+        retBody.addData("options", options);
         return retBody;
     }
 
@@ -1097,6 +1209,7 @@ public class UserController {
     @RequestMapping("/servers/other_user_group")
     public Object getOtherUserGroup(@RequestParam String user_name, @RequestParam String server_name,
                                      @RequestParam String other_user_name) {
+        System.out.println("get info: " + other_user_name);
         List<Object> objects = findLoginAndServer(user_name, server_name);
         if (objects.size() < 3) {
             return objects.get(objects.size() - 1);

@@ -68,7 +68,13 @@ public class ServerInteract {
         map.put("uid", user.getId());
         map.put("sid", server.getId());
         GroupMapper groupMapper = root.getMapper(GroupMapper.class);
-        Group group = groupMapper.getUserGroup(map).get(0);
+        List<Group> groups = groupMapper.getUserGroup(map);
+        Group group;
+        if (groups.size() == 0) {
+            group = null;
+        } else {
+            group = groups.get(0);
+        }
         root.close();
         return group;
     }

@@ -11,7 +11,15 @@ public class RetBody {
     public RetBody(String message) {
         status = 0;
         this.msg = message;
+        if (message.equals("User is not logged in!")) {
+            status = 1;
+        }
         data = new HashMap<>();
+    }
+
+    public RetBody(int status, String msg) {
+        this.status = status;
+        this.msg = msg;
     }
 
     public void setStatus(int status) {

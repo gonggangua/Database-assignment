@@ -48,7 +48,7 @@
           "type": "input-text",
           "id": "u:0ac0a678dd54",
           "label": "名称",
-          "name": "server_name",
+          "name": "new_server_name",
           "value": ""
         },
         {
@@ -80,14 +80,17 @@
       "api": {
         "url": "servers/server_info_change?user_name=${user_name}&server_name=${server_name}",
         "method": "post",
-        "messages": {}
+        "messages": {
+        }
       },
       "title": "服务器信息",
-      "actions": [],
+      "actions": [
+      ],
       "initApi": {
         "method": "get",
         "url": "servers/server_info?user_name=${user_name}&server_name=${server_name}",
-        "messages": {}
+        "messages": {
+        }
       },
       "disabled": true
     },
@@ -112,7 +115,8 @@
                 {
                   "actionType": "enabled",
                   "componentId": "u:2bec2f90e35d",
-                  "args": {}
+                  "args": {
+                  }
                 }
               ]
             }
@@ -130,12 +134,11 @@
               "actions": [
                 {
                   "args": {
-                    "value": {
-                      "isStatic": true
-                    }
+                    "blank": false,
+                    "url": "main_page?user_name=${user_name}"
                   },
-                  "actionType": "setValue",
-                  "componentId": "u:e9db51a5c817",
+                  "actionType": "url",
+                  "componentId": "",
                   "expression": ""
                 },
                 {
@@ -163,7 +166,8 @@
             "click": {
               "actions": [
                 {
-                  "args": {},
+                  "args": {
+                  },
                   "dialog": {
                     "type": "dialog",
                     "title": "服务器统计数据",
@@ -206,7 +210,8 @@
                         "initApi": {
                           "url": "servers/status?user_name=${user_name}&server_name=${server_name}",
                           "method": "get",
-                          "messages": {}
+                          "messages": {
+                          }
                         }
                       }
                     ],
@@ -255,7 +260,8 @@
                   "outputVar": "responseResult"
                 },
                 {
-                  "args": {},
+                  "args": {
+                  },
                   "actionType": "refresh"
                 }
               ],
@@ -291,7 +297,8 @@
                   "actionType": "ajax"
                 },
                 {
-                  "args": {},
+                  "args": {
+                  },
                   "actionType": "refresh"
                 }
               ],
@@ -319,14 +326,16 @@
                     "api": {
                       "url": "servers/delete?user_name=${user_name}&server_name=${server_name}",
                       "method": "delete",
-                      "messages": {}
+                      "messages": {
+                      }
                     }
                   },
                   "outputVar": "responseResult",
                   "actionType": "ajax"
                 },
                 {
-                  "args": {},
+                  "args": {
+                  },
                   "actionType": "goBack"
                 }
               ],
@@ -337,7 +346,8 @@
       ],
       "id": "u:828dfa5cd828",
       "name": "button-toolbar",
-      "actions": []
+      "actions": [
+      ]
     }
   ],
   "id": "u:e9db51a5c817",
@@ -353,7 +363,8 @@
     "data": {
       "isStatic": true
     },
-    "messages": {}
+    "messages": {
+    }
   }
 };
             let amisScoped = amis.embed('#root', amisJSON);
